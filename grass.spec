@@ -33,7 +33,7 @@ BuildRequires:	ncurses-devel
 BuildRequires:	postgresql-backend-devel
 BuildRequires:	postgresql-devel
 BuildRequires:	tcl-devel
-BuildRequires:	tk-devel
+BuildRequires:	tk-devel >= 8.3.4-10
 BuildRequires:	unixODBC-devel
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
