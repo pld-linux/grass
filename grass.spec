@@ -43,6 +43,7 @@ BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
 BuildRequires:	unixODBC-devel
 BuildRequires:	zlib-devel
+BuildRequires:  blas-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define         _noautoreqdep   libGL.so.1 libGLU.so.1
@@ -152,6 +153,7 @@ CPPFLAGS="$CPPFLAGS -I/usr/include/ncurses"; export CPPFLAGS
 	--with-lapack \
 	--with-nls \
 	--with-motif \
+	--with-blas \
 	--with-freetype \
 	--with-includes=%{_includedir} \
 	--with-libs=%{_libdir} \
