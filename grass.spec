@@ -10,6 +10,7 @@ Epoch:		1
 License:	GPL
 Group:		X11/Applications
 Source0:	http://grass.itc.it/grass5/source/%{name}-%{version}_src.tar.gz
+# Source0-md5:	20b2dc4eff13b2d0abca1b44d2b22310
 URL:		http://grass.itc.it/
 BuildRequires:	OpenGL-devel
 BuildRequires:	awk
