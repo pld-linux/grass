@@ -6,6 +6,7 @@ Summary(pl):	System obs³uguj±cy analizê zasobów geograficznych
 Name:		grass
 Version:	5.0.0
 Release:	1
+Epoch:		1
 License:	GPL
 Group:		X11/Applications
 Source0:	http://grass.itc.it/grass5/source/%{name}-%{version}_src.tar.gz
