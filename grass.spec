@@ -32,8 +32,8 @@ BuildRequires:	motif-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	postgresql-backend-devel
 BuildRequires:	postgresql-devel
-BuildRequires:	tcl-devel
-BuildRequires:	tk-devel >= 8.3.4-10
+BuildRequires:	tcl-devel >= 8.3.4-10
+BuildRequires:	tk-devel
 BuildRequires:	unixODBC-devel
 BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
