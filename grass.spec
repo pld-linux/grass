@@ -117,7 +117,7 @@ Header files and static libraries for GRASS.
 Pliki nag³ówkowe i biblioteki statyczne systemu GRASS.
 
 %prep
-%setup -q -n %{name}%{version}
+%setup -q 
 
 %build
 CFLAGS="%{rpmcflags} -I/usr/include/ncurses"; export CFLAGS
