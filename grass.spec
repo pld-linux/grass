@@ -14,11 +14,11 @@
 Summary:	The Geographic Resources Analysis Support System
 Summary(pl):	System obs³uguj±cy analizê zasobów geograficznych
 Name:		grass
-Version:	5.0.0pre3
+Version:	5.0.0pre4
 Release:	1
 License:	GPL
 Group:		X11/Applications
-Source0:	http://grass.itc.it/grass5/source/%{name}%{version}.tar.gz
+Source0:	http://grass.itc.it/grass5/source/%{name}%{version}_src.tar.gz
 URL:		http://grass.itc.it/
 BuildRequires:	OpenGL-devel
 BuildRequires:	awk
