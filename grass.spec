@@ -5,7 +5,7 @@ Summary:	The Geographic Resources Analysis Support System
 Summary(pl):	System obs³uguj±cy analizê zasobów geograficznych
 Name:		grass
 Version:	5.0.0
-Release:	1.1
+Release:	2
 Epoch:		1
 License:	GPL
 Group:		X11/Applications
@@ -203,15 +203,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/grass5/etc/Gcolortab
 %attr(755,root,root) %{_libdir}/grass5/etc/agnps50
 %attr(755,root,root) %{_libdir}/grass5/etc/bin
+%attr(755,root,root) %{_libdir}/grass5/etc/b.*
 %{_libdir}/grass5/etc/census.docs
-%attr(755,root,root) %{_libdir}/grass5/etc/d.siter
-%dir %{_libdir}/grass5/etc/dig_drivers
-%{_libdir}/grass5/etc/digitizers
+%attr(755,root,root) %{_libdir}/grass5/etc/c[^e]*
+%attr(755,root,root) %{_libdir}/grass5/etc/d[.b]*
+%{_libdir}/grass5/etc/d[ai]*
 %{_libdir}/grass5/etc/help
-%attr(755,root,root) %{_libdir}/grass5/etc/i.oif
-%attr(755,root,root) %{_libdir}/grass5/etc/imagery
-%attr(755,root,root) %{_libdir}/grass5/etc/lister
 %{_libdir}/grass5/etc/nad
+%attr(755,root,root) %{_libdir}/grass5/etc/nad2bin
 %dir %{_libdir}/grass5/etc/nviz2.2
 %attr(755,root,root) %{_libdir}/grass5/etc/nviz2.2/NVWISH2.2
 %{_libdir}/grass5/etc/nviz2.2/bitmaps
@@ -235,13 +234,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/grass5/etc/paint/header
 %{_libdir}/grass5/etc/paint/patterns*
 %{_libdir}/grass5/etc/paint/prolog.ps
-%attr(755,root,root) %{_libdir}/grass5/etc/r.fea
-%dir %{_libdir}/grass5/etc/sites
 %attr(755,root,root) %{_libdir}/grass5/etc/water
 %{_libdir}/grass5/etc/FIPS.code
-%attr(755,root,root) %{_libdir}/grass5/etc/[Ibcilnv]*
-%{_libdir}/grass5/etc/d[ai]*
-%attr(755,root,root) %{_libdir}/grass5/etc/db*
+%attr(755,root,root) %{_libdir}/grass5/etc/[Iilv]*
 %attr(755,root,root) %{_libdir}/grass5/etc/echo
 %{_libdir}/grass5/etc/el*
 %{_libdir}/grass5/etc/font.bin
@@ -256,7 +251,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/grass5/etc/monitorcap
 %attr(755,root,root) %{_libdir}/grass5/etc/permut
 %{_libdir}/grass5/etc/projections
-%attr(755,root,root) %{_libdir}/grass5/etc/r[.u]*
+%attr(755,root,root) %{_libdir}/grass5/etc/r[^g]*
 %{_libdir}/grass5/etc/rgb.txt
 %attr(755,root,root) %{_libdir}/grass5/etc/s[^t]*
 %{_libdir}/grass5/etc/state*
