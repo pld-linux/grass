@@ -147,6 +147,7 @@ if [ -f %{_pkgconfigdir}/libpng12.pc ] ; then
         CPPFLAGS="`pkg-config libpng12 --cflags`"; export CPPFLAGS
 fi
 CFLAGS="%{rpmcflags} -I/usr/include/ncurses"; export CFLAGS
+CPPFLAGS="$CPPFLAGS -I/usr/include/ncurses"; export CPPFLAGS
 %configure2_13 \
 	--with-lapack \
 	--with-motif \
