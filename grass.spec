@@ -38,8 +38,6 @@ BuildRequires:	zlib-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define         _noautoreqdep   libGL.so.1 libGLU.so.1
-%define		_prefix		/usr/X11R6
-%define		_mandir		%{_prefix}/man
 %define		_sysconfdir	/etc/X11
 %define		_target_platform %{_target_cpu}-%{_target_vendor}-%{_host_os}
 
