@@ -4,13 +4,12 @@
 Summary:	The Geographic Resources Analysis Support System
 Summary(pl):	System obs³uguj±cy analizê zasobów geograficznych
 Name:		grass
-Version:	5.0.0
-Release:	5
+Version:	5.0.2
+Release:	1
 Epoch:		1
 License:	GPL
 Group:		X11/Applications
 Source0:	http://grass.itc.it/grass5/source/%{name}-%{version}_src.tar.gz
-Patch1:		grass-athlon.patch
 URL:		http://grass.itc.it/
 BuildRequires:	OpenGL-devel
 BuildRequires:	awk
@@ -20,7 +19,6 @@ BuildRequires:	fftw-devel
 BuildRequires:	flex
 BuildRequires:	freetype-devel >= 2.0.0
 BuildRequires:	gcc-g77
-#BuildRequires:	gdal-devel
 BuildRequires:	gdbm-devel
 BuildRequires:	gd-devel
 BuildRequires:	lapack-devel
@@ -40,7 +38,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define         _noautoreqdep   libGL.so.1 libGLU.so.1
 %define		_sysconfdir	/etc/X11
-%define		_target_platform %{_target_cpu}-%{_target_vendor}-%{_host_os}
+%define		_target_platform %(echo %{_target_cpu}-%{_target_vendor}-%{_host_os} | sed -e 's/athlon/i686/;s/ppc/powerpc/')
 
 %description
 GRASS (the Geographic Resources Analysis Support System) is a software
@@ -119,12 +117,12 @@ Header files and static libraries for GRASS.
 Pliki nag³ówkowe i biblioteki statyczne systemu GRASS.
 
 %prep
-%setup -q 
-%patch1 -p0
+%setup -q -n %{name}%{version}
 
 %build
 CFLAGS="%{rpmcflags} -I/usr/include/ncurses"; export CFLAGS
-CPPFLAGS="-I/usr/include/ncurses"; export CPPFLAGS
+CPPFLAGS="-I/usr/include/ncurses -I/usr/X11R6/include"; export CPPFLAGS
+# no --with-gdal, so it will be dlopen()ed, not linked directly
 %configure2_13 \
 	--with-lapack \
 	--with-nls \
@@ -141,11 +139,6 @@ CPPFLAGS="-I/usr/include/ncurses"; export CPPFLAGS
 rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT{%{_mandir}/man1,%{_includedir}/grass5,%{_libdir}/grass5,%{_bindir},%{_datadir}}
-
-#due to uncompatibilty $ARCH and %%{_target_platform} on ppc
-%ifarch ppc
-%define _target_platform powerpc-pld-linux-gnu
-%endif
 
 cd bin.%{_target_platform}
 mv grass5 grass5.in
@@ -185,15 +178,14 @@ rm -rf $RPM_BUILD_ROOT
 %doc bwidget.CHANGES.TXT bwidget.README.grass
 %doc dist.%{_target_platform}/bwidget/BWman tcltkgrass-docs
 %attr(755,root,root) %{_bindir}/*
-#%attr(-,root,root) %{_libdir}/grass5
 %dir %{_libdir}/grass5
 %attr(755,root,root) %{_libdir}/grass5/bin
 %dir %{_libdir}/grass5/bwidget
 %{_libdir}/grass5/bwidget/*.tcl
 %dir %{_libdir}/grass5/bwidget/demo
 %{_libdir}/grass5/bwidget/demo/*.xbm
-%{_libdir}/grass5/bwidget/demo/[^d]*.tcl
-%{_libdir}/grass5/bwidget/demo/d[^e]*.tcl
+%{_libdir}/grass5/bwidget/demo/[!d]*.tcl
+%{_libdir}/grass5/bwidget/demo/d[!e]*.tcl
 %attr(755,root,root) %{_libdir}/grass5/bwidget/demo/demo.tcl
 %{_libdir}/grass5/bwidget/images
 %dir %{_libdir}/grass5/bwidget/lang
@@ -211,7 +203,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/grass5/etc/bin
 %attr(755,root,root) %{_libdir}/grass5/etc/b.*
 %{_libdir}/grass5/etc/census.docs
-%attr(755,root,root) %{_libdir}/grass5/etc/c[^e]*
+%attr(755,root,root) %{_libdir}/grass5/etc/c[!e]*
 %attr(755,root,root) %{_libdir}/grass5/etc/d[.b]*
 %{_libdir}/grass5/etc/d[ai]*
 %{_libdir}/grass5/etc/help
@@ -221,17 +213,17 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/grass5/etc/nviz2.2/NVWISH2.2
 %{_libdir}/grass5/etc/nviz2.2/bitmaps
 %dir %{_libdir}/grass5/etc/nviz2.2/scripts
-%{_libdir}/grass5/etc/nviz2.2/scripts/[^nps]*
+%{_libdir}/grass5/etc/nviz2.2/scripts/[!nps]*
 %attr(755,root,root) %{_libdir}/grass5/etc/nviz2.2/scripts/nviz2.2_script
 %{_libdir}/grass5/etc/nviz2.2/scripts/nviz_init.tcl
-%{_libdir}/grass5/etc/nviz2.2/scripts/p[^a]*
+%{_libdir}/grass5/etc/nviz2.2/scripts/p[!a]*
 %{_libdir}/grass5/etc/nviz2.2/scripts/panelIndex
-%{_libdir}/grass5/etc/nviz2.2/scripts/panel_[^m]*
-%{_libdir}/grass5/etc/nviz2.2/scripts/panel_m[^k]*
+%{_libdir}/grass5/etc/nviz2.2/scripts/panel_[!m]*
+%{_libdir}/grass5/etc/nviz2.2/scripts/panel_m[!k]*
 %attr(755,root,root) %{_libdir}/grass5/etc/nviz2.2/scripts/panel_mkdspf.tcl
-%{_libdir}/grass5/etc/nviz2.2/scripts/s[^c]*
+%{_libdir}/grass5/etc/nviz2.2/scripts/s[!c]*
 %{_libdir}/grass5/etc/nviz2.2/scripts/script_support.tcl
-%attr(755,root,root) %{_libdir}/grass5/etc/nviz2.2/scripts/script_[^s]*
+%attr(755,root,root) %{_libdir}/grass5/etc/nviz2.2/scripts/script_[!s]*
 %dir %{_libdir}/grass5/etc/paint
 %attr(755,root,root) %{_libdir}/grass5/etc/paint/driver*
 %{_libdir}/grass5/etc/paint/ps.devices
@@ -257,24 +249,24 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/grass5/etc/monitorcap
 %attr(755,root,root) %{_libdir}/grass5/etc/permut
 %{_libdir}/grass5/etc/projections
-%attr(755,root,root) %{_libdir}/grass5/etc/r[^g]*
+%attr(755,root,root) %{_libdir}/grass5/etc/r[!g]*
 %{_libdir}/grass5/etc/rgb.txt
-%attr(755,root,root) %{_libdir}/grass5/etc/s[^t]*
+%attr(755,root,root) %{_libdir}/grass5/etc/s[!t]*
 %{_libdir}/grass5/etc/state*
 %{_libdir}/grass5/fonts
 %attr(755,root,root) %{_libdir}/grass5/scripts
 %dir %{_libdir}/grass5/tcltkgrass
 %dir %{_libdir}/grass5/tcltkgrass/main
-%{_libdir}/grass5/tcltkgrass/main/[^t]*.tcl
+%{_libdir}/grass5/tcltkgrass/main/[!t]*.tcl
 %attr(755,root,root) %{_libdir}/grass5/tcltkgrass/main/pause
-%{_libdir}/grass5/tcltkgrass/main/t[^k]*.tcl
+%{_libdir}/grass5/tcltkgrass/main/t[!k]*.tcl
 %attr(755,root,root) %{_libdir}/grass5/tcltkgrass/main/tksys.tcl
 %dir %{_libdir}/grass5/tcltkgrass/module
 %{_libdir}/grass5/tcltkgrass/module/[cdginprsv]*
-%{_libdir}/grass5/tcltkgrass/module/m[^i]*
+%{_libdir}/grass5/tcltkgrass/module/m[!i]*
 %attr(755,root,root) %{_libdir}/grass5/tcltkgrass/module/missing_modules.sh
 %dir %{_libdir}/grass5/tcltkgrass/script
-%attr(755,root,root) %{_libdir}/grass5/tcltkgrass/script/[^g]*
+%attr(755,root,root) %{_libdir}/grass5/tcltkgrass/script/[!g]*
 %attr(755,root,root) %{_libdir}/grass5/tcltkgrass/script/g.*
 %{_libdir}/grass5/tcltkgrass/script/gis_set.tcl
 %{_libdir}/grass5/txt
