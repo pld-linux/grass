@@ -20,12 +20,13 @@ License:	GPL
 Group:		X11/Applications
 Source0:	http://grass.itc.it/grass5/source/%{name}%{version}.tar.gz
 URL:		http://grass.itc.it/
+BuildRequires:	OpenGL-devel
 BuildRequires:	awk
 BuildRequires:	bison
 BuildRequires:	blas-devel
 BuildRequires:	fftw-devel
 BuildRequires:	flex
-BuildRequires:	freetype-devel
+BuildRequires:	freetype-devel >= 2.0.0
 BuildRequires:	gcc-g77
 #BuildRequires:	gdal-devel
 BuildRequires:	gdbm-devel
@@ -36,7 +37,6 @@ BuildRequires:	libpng-devel
 BuildRequires:	libtiff-devel
 BuildRequires:	motif-devel
 BuildRequires:	ncurses-devel
-BuildRequires:	OpenGL-devel
 BuildRequires:	postgresql-backend-devel
 BuildRequires:	postgresql-devel
 BuildRequires:	tcl-devel
