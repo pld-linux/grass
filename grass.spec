@@ -1,5 +1,5 @@
 Summary:	The Geographic Resources Analysis Support System
-Summary(pl):	System Obs³uguj±cy Analizê Zasobów Geograficznych
+Summary(pl):	System obs³uguj±cy analizê zasobów geograficznych
 Name:		grass
 Version:	5.0.0pre3
 Release:	1
@@ -47,36 +47,43 @@ scanners, and the RIM, Informix, Postgres, and Oracle databases.
 
 %description -l pl
 GRASS (System Wspierania Analiz Zasobów Geograficznych) jest rastrowym
-oraz wektorowym systemem GIS (System Informacji Geograficznej), system
-obróbki obrazów, tworzeniem grafiki oraz system modelowania
-przestrzennego. GRASS zawiera wiele modu³ów do manipulacji danych
-rastrowych, wektorowych, renderowania obrazów na monitorze lub
+oraz wektorowym systemem GIS (System Informacji Geograficznej),
+obróbki obrazów, tworzenia grafiki oraz modelowania przestrzennego.
+GRASS zawiera wiele modu³ów wspomagaj±cych manipulacjê danymi
+rastrowymi i wektorowymi, renderowanie obrazów na monitorze lub
 papierze, obróbkê multispektralnych obrazów, punktowe oraz ogólne
 zarz±dzanie danymi. Zawiera równie¿ narzêdzia do wspó³pracy z
 digitizerami, skanerami oraz bazami RIM, Informix, Postgres oraz
 Oracle.
 
 %package OpenGL
-Summary:	NVIZ - a 3D-tool for grass
+Summary:	NVIZ - a 3D-tool for GRASS
 Summary(pl):	NVIZ - narzêdzie 3D dla GRASSa
 Group:		X11/Applications
 Requires:	%{name} = %{version}
 
 %description OpenGL
-nviz is a GRASS module-in-progress which allows users to realistically
-render multiple surfaces in a 3D space, optionally using thematic
-coloring, draping GRASS vector files over the surfaces, and displaying
-GRASS site files either draped on the surfaces or as 3D point
-locations.
+Package contains nviz, which is a GRASS module-in-progress which
+allows users to realistically render multiple surfaces in a 3D space,
+optionally using thematic coloring, draping GRASS vector files over
+the surfaces, and displaying GRASS site files either draped on the
+surfaces or as 3D point locations.
+
+%description OpenGL -l pl
+Pakiet zawiera modu³ nviz, który rozszerza funkcjonalno¶æ systemu
+GRASS o mo¿liwo¶æ realistycznego renderowania wielu powierzchni w
+trójwymiarowej przestrzeni. Na renderowanych powierzchniach, które
+mog± byæ tematycznie kolorowane, mo¿na zawieszaæ pliki wektorowe
+GRASSa.
 
 %package pg
-Summary:	postgres database interface
+Summary:	PostgreSQL database interface
 Summary(pl):	Interfejs do bazy PostgreSQL
 Group:		X11/Applications
 Requires:	%{name} = %{version}
 
 %description pg
-Postgres database interface for GRASS.
+PostgreSQL database interface for GRASS.
 
 %dewscription pg -l pl
 Interfejs do bazy PostgreSQL dla GRASSa.
