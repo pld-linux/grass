@@ -5,7 +5,7 @@ Summary:	The Geographic Resources Analysis Support System
 Summary(pl):	System obs³uguj±cy analizê zasobów geograficznych
 Name:		grass
 Version:	5.0.0
-Release:	3
+Release:	4
 Epoch:		1
 License:	GPL
 Group:		X11/Applications
@@ -141,6 +141,11 @@ CPPFLAGS="-I/usr/include/ncurses"; export CPPFLAGS
 rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT{%{_mandir}/man1,%{_includedir}/grass5,%{_libdir}/grass5,%{_bindir},%{_datadir}}
+
+#due to uncompatibilty $ARCH and %%{_target_platform} on ppc
+%ifarch ppc
+%define _target_platform powerpc-pld-linux-gnu
+%endif
 
 cd bin.%{_target_platform}
 mv grass5 grass5.in
