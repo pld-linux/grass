@@ -20,28 +20,29 @@ License:	GPL
 Group:		X11/Applications
 Source0:	http://grass.itc.it/grass5/source/%{name}%{version}.tar.gz
 URL:		http://grass.itc.it/
+BuildRequires:	awk
+BuildRequires:	bison
 BuildRequires:	blas-devel
-#BuildRequires:	gdal-devel
-BuildRequires:	OpenGL-devel
 BuildRequires:	fftw-devel
+BuildRequires:	flex
 BuildRequires:	freetype-devel
-BuildRequires:	gd-devel
+BuildRequires:	gcc-g77
+#BuildRequires:	gdal-devel
 BuildRequires:	gdbm-devel
+BuildRequires:	gd-devel
 BuildRequires:	lapack-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
 BuildRequires:	libtiff-devel
 BuildRequires:	motif-devel
+BuildRequires:	ncurses-devel
+BuildRequires:	OpenGL-devel
 BuildRequires:	postgresql-backend-devel
 BuildRequires:	postgresql-devel
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
 BuildRequires:	unixODBC-devel
 BuildRequires:	zlib-devel
-BuildRequires:	gcc-g77
-BuildRequires:	flex
-BuildRequires:	bison
-BuildRequires:	ncurses-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define         _noautoreqdep   libGL.so.1 libGLU.so.1
@@ -159,7 +160,13 @@ CFLAGS="%{rpmcflags} -I/usr/include/ncurses"; export CFLAGS
 %install
 rm -rf $RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT{%{_mandir}/man1,%{_includedir}/grass5,%{_libdir}/grass5}
+install -d $RPM_BUILD_ROOT{%{_mandir}/man1,%{_includedir}/grass5,%{_libdir}/grass5,%{_bindir}}
+
+cd bin.%{_host}
+mv grass5 grass5.in
+awk '// {if (/^GISBASE/) { print "GISBASE=%{_libdir}/grass5" } else { print $0 }}' < grass5.in > grass5
+install grass5 $RPM_BUILD_ROOT%{_bindir}
+cd ..
 
 cd dist.%{_host}
 
@@ -186,17 +193,21 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc *.gz */*.gz
-%dir %{_libdir}/grass5
-%dir %{_libdir}/grass5/bin
-%attr(755,root,root) %{_libdir}/grass5/bin/*
-%{_libdir}/grass5/bwidget
-%{_libdir}/grass5/etc
-%{_libdir}/grass5/dev
-%{_libdir}/grass5/driver
-%{_libdir}/grass5/fonts
-%{_libdir}/grass5/scripts
-%{_libdir}/grass5/tcltkgrass
-%{_libdir}/grass5/txt
+%attr(755,root,root) %{_bindir}/*
+%attr(-,root,root) %{_libdir}/grass5
+
+
+#%dir %{_libdir}/grass5
+#%dir %{_libdir}/grass5/bin
+#%attr(755,root,root) %{_libdir}/grass5/bin/*
+#%{_libdir}/grass5/bwidget
+#%{_libdir}/grass5/etc
+#%{_libdir}/grass5/dev
+#%{_libdir}/grass5/driver
+#%{_libdir}/grass5/fonts
+#%{_libdir}/grass5/scripts
+#%{_libdir}/grass5/tcltkgrass
+#%{_libdir}/grass5/txt
 %{_mandir}/man1/*
 
 %files devel
