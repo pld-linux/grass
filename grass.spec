@@ -8,6 +8,7 @@
 #   conflicts with file from package ImageMagick-5.4.4-1
 #
 # 2. see %install section :-\
+# 3. 755 for etc/bin/cmd/*
 #
 
 Summary:	The Geographic Resources Analysis Support System
