@@ -66,7 +66,7 @@ Oracle.
 Summary:	NVIZ - a 3D-tool for GRASS
 Summary(pl):	NVIZ - narzêdzie 3D dla GRASSa
 Group:		X11/Applications
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{epoch}:%{version}
 
 %description OpenGL
 Package contains nviz, which is a GRASS module-in-progress which
@@ -86,7 +86,7 @@ GRASSa.
 Summary:	PostgreSQL database interface
 Summary(pl):	Interfejs do bazy PostgreSQL
 Group:		X11/Applications
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{epoch}:%{version}
 
 %description pg
 PostgreSQL database interface for GRASS.
@@ -98,7 +98,7 @@ Interfejs do bazy PostgreSQL dla GRASSa.
 Summary:	ODBC database interface
 Summary(pl):	Interfejs ODBC dla GRASSa
 Group:		X11/Applications
-Requires:	%{name} = %{version}
+Requires:	%{name} = %{epoch}:%{version}
 
 %description odbc
 ODBC database interface for GRASS.
