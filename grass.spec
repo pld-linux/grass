@@ -111,7 +111,7 @@ Summary:	Header files and static libraries for GRASS
 Summary(pl):	Pliki nag³ówkowe i biblioteki statyczne systemu GRASS
 Group:		X11/Development/Libraries
 
-%description devel 
+%description devel
 Header files and static libraries for GRASS.
 
 %description devel -l pl
