@@ -5,7 +5,7 @@ Summary:	The Geographic Resources Analysis Support System
 Summary(pl):	System obs³uguj±cy analizê zasobów geograficznych
 Name:		grass
 Version:	5.0.0
-Release:	1
+Release:	1.1
 Epoch:		1
 License:	GPL
 Group:		X11/Applications
@@ -40,6 +40,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_prefix		/usr/X11R6
 %define		_mandir		%{_prefix}/man
 %define		_sysconfdir	/etc/X11
+%define		_target_platform %{_target_cpu}-%{_target_vendor}-%{_host_os}
 
 %description
 GRASS (the Geographic Resources Analysis Support System) is a software
@@ -140,13 +141,13 @@ rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT{%{_mandir}/man1,%{_includedir}/grass5,%{_libdir}/grass5,%{_bindir},%{_datadir}}
 
-cd bin.%{_host}
+cd bin.%{_target_platform}
 mv grass5 grass5.in
 awk '// {if (/^GISBASE/) { print "GISBASE=%{_libdir}/grass5" } else { print $0 }}' < grass5.in > grass5
 install grass5 $RPM_BUILD_ROOT%{_bindir}
 cd ..
 
-cd dist.%{_host}
+cd dist.%{_target_platform}
 
 find . -type d -name CVS | xargs rm -rf
 
@@ -176,7 +177,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS BUGS COPYING NEWS.html ONGOING TODO.txt documents/*.*
 %doc bwidget.CHANGES.TXT bwidget.README.grass
-%doc dist.%{_host}/bwidget/BWman tcltkgrass-docs
+%doc dist.%{_target_platform}/bwidget/BWman tcltkgrass-docs
 %attr(755,root,root) %{_bindir}/*
 #%attr(-,root,root) %{_libdir}/grass5
 %dir %{_libdir}/grass5
