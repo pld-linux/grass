@@ -4,13 +4,13 @@
 Summary:	The Geographic Resources Analysis Support System
 Summary(pl):	System obs³uguj±cy analizê zasobów geograficznych
 Name:		grass
-Version:	5.0.2
+Version:	5.0.3
 Release:	1
 Epoch:		1
 License:	GPL
 Group:		X11/Applications
-Source0:	http://grass.itc.it/grass5/source/%{name}-%{version}_src.tar.gz
-# Source0-md5:	20b2dc4eff13b2d0abca1b44d2b22310
+Source0:	ftp://grass.itc.it/pub/grass/grass5/source/%{name}-%{version}_src.tar.gz
+# Source0-md5:	8c1cca7f9f36dca671d0f753501f1f4f
 URL:		http://grass.itc.it/
 BuildRequires:	OpenGL-devel
 BuildRequires:	awk
@@ -118,7 +118,7 @@ Header files and static libraries for GRASS.
 Pliki nag³ówkowe i biblioteki statyczne systemu GRASS.
 
 %prep
-%setup -q -n %{name}%{version}
+%setup -q
 
 %build
 CFLAGS="%{rpmcflags} -I/usr/include/ncurses"; export CFLAGS
@@ -200,7 +200,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/grass5/driver
 %dir %{_libdir}/grass5/etc
 %{_libdir}/grass5/etc/Gcolortab
-%attr(755,root,root) %{_libdir}/grass5/etc/agnps50
 %attr(755,root,root) %{_libdir}/grass5/etc/bin
 %attr(755,root,root) %{_libdir}/grass5/etc/b.*
 %{_libdir}/grass5/etc/census.docs
