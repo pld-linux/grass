@@ -8,7 +8,7 @@ Version:	5.0.0
 Release:	1
 License:	GPL
 Group:		X11/Applications
-Source0:	http://grass.itc.it/grass5/source/%{name}%{version}_src.tar.gz
+Source0:	http://grass.itc.it/grass5/source/%{name}-%{version}_src.tar.gz
 URL:		http://grass.itc.it/
 BuildRequires:	OpenGL-devel
 BuildRequires:	awk
