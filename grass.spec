@@ -5,11 +5,12 @@ Summary:	The Geographic Resources Analysis Support System
 Summary(pl):	System obs³uguj±cy analizê zasobów geograficznych
 Name:		grass
 Version:	5.0.0
-Release:	4
+Release:	5
 Epoch:		1
 License:	GPL
 Group:		X11/Applications
 Source0:	http://grass.itc.it/grass5/source/%{name}-%{version}_src.tar.gz
+Patch1:		grass-athlon.patch
 URL:		http://grass.itc.it/
 BuildRequires:	OpenGL-devel
 BuildRequires:	awk
@@ -119,6 +120,7 @@ Pliki nag³ówkowe i biblioteki statyczne systemu GRASS.
 
 %prep
 %setup -q 
+%patch1 -p0
 
 %build
 CFLAGS="%{rpmcflags} -I/usr/include/ncurses"; export CFLAGS
