@@ -1,3 +1,15 @@
+
+#
+# todo:
+# 1. Manuals conflicts with ImageMagick 
+# file /usr/X11R6/man/man1/display.1.gz from install of grass-5.0.0pre3-1
+#   conflicts with file from package ImageMagick-5.4.4-1
+# file /usr/X11R6/man/man1/import.1.gz from install of grass-5.0.0pre3-1
+#   conflicts with file from package ImageMagick-5.4.4-1
+#
+# 2. see %install section :-\
+#
+
 Summary:	The Geographic Resources Analysis Support System
 Summary(pl):	System obs³uguj±cy analizê zasobów geograficznych
 Name:		grass
@@ -101,6 +113,30 @@ ODBC database interface for GRASS.
 %description odbc -l pl
 Interfejs ODBC dla GRASSa.
 
+%package devel
+Summary:	Header files for GRASS
+Summary(pl):	Pliki nag³ówkowe systemu GRASS
+Group:		X11/Development/Libraries
+Requires:	%{name} = %{version}
+
+%description devel 
+Header files for GRASS.
+
+%description devel -l pl
+Pliki nag³ówkowe systemu GRASS.
+
+%package static
+Summary:	GRASS static libraries
+Summary(pl):	Biblioteki statyczne systemu GRASS
+Group:		X11/Development/Libraries
+Requires:	%{name} = %{version}
+
+%description static 
+GRASS static libraries.
+
+%description static -l pl
+Biblioteki statyczne systemu GRASS.
+
 %prep
 %setup -q -n %{name}%{version}
 
@@ -122,10 +158,24 @@ CFLAGS="%{rpmcflags} -I/usr/include/ncurses"; export CFLAGS
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{makeinstall}
+install -d $RPM_BUILD_ROOT{%{_mandir}/man1,%{_includedir}/grass5,%{_libdir}/grass5}
 
-#%{__make} install \
-#	DESTDIR=$RPM_BUILD_ROOT
+cd dist.%{_host}
+
+# bin: there are many binaries with the same content, i.e. d.*, i.* -
+#      create symlinks instead of binaries?
+# etc: it is a big mess; do not move the content of "etc" dir to /etc
+# txt: move to %docdir?
+# tcltkgrass: separate package?
+# bwidget: move to devel or separate package?
+# dev: move the content to /dev or leave it as below?
+cp -a bin bwidget etc dev driver fonts scripts tcltkgrass txt $RPM_BUILD_ROOT%{_libdir}/grass5
+
+install man/man1/* $RPM_BUILD_ROOT%{_mandir}/man1
+install lib/* $RPM_BUILD_ROOT%{_libdir}
+install include/* $RPM_BUILD_ROOT%{_includedir}/grass5
+
+cd ..
 
 gzip -9nf AUTHORS BUGS COPYING NEWS.html ONGOING TODO.txt documents/*.*
 
@@ -135,4 +185,23 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc *.gz */*.gz
-%attr(755,root,root) %{_bindir}/*
+%dir %{_libdir}/grass5
+%dir %{_libdir}/grass5/bin
+%attr(755,root,root) %{_libdir}/grass5/bin/*
+%{_libdir}/grass5/bwidget
+%{_libdir}/grass5/etc
+%{_libdir}/grass5/dev
+%{_libdir}/grass5/driver
+%{_libdir}/grass5/fonts
+%{_libdir}/grass5/scripts
+%{_libdir}/grass5/tcltkgrass
+%{_libdir}/grass5/txt
+%{_mandir}/man1/*
+
+%files devel
+%defattr(644,root,root,755)
+%{_includedir}/grass5
+
+%files static
+%defattr(644,root,root,755)
+%{_libdir}/*.a
