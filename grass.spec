@@ -150,6 +150,7 @@ CFLAGS="%{rpmcflags} -I/usr/include/ncurses"; export CFLAGS
 CPPFLAGS="$CPPFLAGS -I/usr/include/ncurses"; export CPPFLAGS
 %configure2_13 \
 	--with-lapack \
+	--with-nls \
 	--with-motif \
 	--with-freetype \
 	--with-includes=%{_includedir} \
