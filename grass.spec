@@ -1,16 +1,15 @@
-#
-# todo: 1. see %install section :-\
-#
 Summary:	The Geographic Resources Analysis Support System
 Summary(pl):	System obs³uguj±cy analizê zasobów geograficznych
 Name:		grass
-Version:	5.0.3
+Version:	6.0.1
 Release:	1
 Epoch:		1
 License:	GPL
 Group:		X11/Applications
-Source0:	ftp://grass.itc.it/pub/grass/grass5/source/%{name}-%{version}_src.tar.gz
-# Source0-md5:	8c1cca7f9f36dca671d0f753501f1f4f
+Source0:	ftp://grass.itc.it/pub/grass/grass60/source/%{name}-%{version}.tar.gz
+# Source0-md5:	5225e816895d5e6b28bca623f76acaad
+Patch0:		%{name}-tk85.patch
+Patch1:		%{name}-soname.patch
 URL:		http://grass.itc.it/
 BuildRequires:	OpenGL-devel
 BuildRequires:	awk
@@ -20,17 +19,24 @@ BuildRequires:	fftw-devel
 BuildRequires:	flex
 BuildRequires:	freetype-devel >= 2.0.0
 BuildRequires:	gcc-g77
+BuildRequires:	gdal-devel
 BuildRequires:	gdbm-devel
 BuildRequires:	gd-devel
 BuildRequires:	lapack-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
+BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel
 BuildRequires:	man
 BuildRequires:	motif-devel
+BuildRequires:	mysql-devel
 BuildRequires:	ncurses-devel
 BuildRequires:	postgresql-backend-devel
 BuildRequires:	postgresql-devel
+BuildRequires:	proj-devel
+BuildRequires:	proj-progs
+BuildRequires:	readline-devel
+BuildRequires:	sed >= 4.0
 BuildRequires:	tcl-devel
 BuildRequires:	tk-devel
 BuildRequires:	unixODBC-devel
@@ -119,160 +125,131 @@ Pliki nag³ówkowe i biblioteki statyczne systemu GRASS.
 
 %prep
 %setup -q
+%patch0 -p1
+%patch1 -p1
 
 %build
 CFLAGS="%{rpmcflags} -I/usr/include/ncurses"; export CFLAGS
 CPPFLAGS="-I/usr/include/ncurses -I/usr/X11R6/include"; export CPPFLAGS
-# no --with-gdal, so it will be dlopen()ed, not linked directly
 %configure2_13 \
-	--with-lapack \
-	--with-nls \
-	--with-motif \
-	--with-blas \
-	--with-freetype \
 	--with-includes=%{_includedir} \
 	--with-libs=%{_libdir} \
+	--with-blas \
+	--with-cxx \
+	--with-freetype \
+	--with-freetype-includes=/usr/include/freetype2 \
+	--with-lapack \
+	--with-motif \
+	--with-mysql \
+	--with-mysql-includes=/usr/include/mysql \
+	--with-nls \
+	--with-odbc \
 	--with-postgres-includes=/usr/include/postgresql/server \
-	--with-freetype-includes=/usr/include/freetype2
+	--with-readline
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT{%{_mandir}/man1,%{_includedir}/grass5,%{_libdir}/grass5,%{_bindir},%{_datadir}}
+%{__make} install \
+	prefix=$RPM_BUILD_ROOT%{_libdir} \
+	BINDIR=$RPM_BUILD_ROOT%{_bindir} \
+	PREFIX=$RPM_BUILD_ROOT%{_libdir}
 
-cd bin.%{_target_platform}
-mv grass5 grass5.in
-awk '// {if (/^GISBASE/) { print "GISBASE=%{_libdir}/grass5" } else { print $0 }}' < grass5.in > grass5
-install grass5 $RPM_BUILD_ROOT%{_bindir}
-cd ..
+install -d $RPM_BUILD_ROOT{%{_datadir},%{_includedir}/grass60}
+mv $RPM_BUILD_ROOT%{_libdir}/grass-%{version}/include/* $RPM_BUILD_ROOT%{_includedir}/grass60
+mv $RPM_BUILD_ROOT%{_libdir}/grass-%{version}/lib/* $RPM_BUILD_ROOT%{_libdir}
+mv $RPM_BUILD_ROOT%{_libdir}/grass-%{version}/locale $RPM_BUILD_ROOT%{_datadir}
+mv $RPM_BUILD_ROOT%{_libdir}/grass-%{version}/man $RPM_BUILD_ROOT%{_datadir}
 
-cd dist.%{_target_platform}
+sed -i -e 's,^GISBASE=.*,GISBASE=%{_libdir}/grass-%{version},' $RPM_BUILD_ROOT%{_bindir}/grass60
 
-find . -type d -name CVS | xargs rm -rf
+cp -f lib/external/bwidget/CHANGES.txt bwidget.CHANGES.TXT
+cp -f lib/external/bwidget/README.grass bwidget.README.grass
 
-# etc: it is a big mess; do not move the content of "etc" dir to /etc
-# txt: move to %docdir?
-# tcltkgrass: separate package?
-# bwidget: move to devel or separate package?
-# dev: move the content to /dev or leave it as below?
-cp -a bin bwidget etc dev driver fonts scripts tcltkgrass txt $RPM_BUILD_ROOT%{_libdir}/grass5
-
-install man/man1/* $RPM_BUILD_ROOT%{_mandir}/man1
-install lib/* $RPM_BUILD_ROOT%{_libdir}
-install include/* $RPM_BUILD_ROOT%{_includedir}/grass5
-cp -rf locale $RPM_BUILD_ROOT%{_datadir}
-
-mv -f bwidget/CHANGES.txt ../bwidget.CHANGES.TXT
-mv -f bwidget/README.grass ../bwidget.README.grass
-mv -f tcltkgrass/docs ../tcltkgrass-docs
-cd ..
+rm -rf $RPM_BUILD_ROOT%{_libdir}/grass-%{version}/{bwidget/{*.txt,README.grass},docs}
 
 %find_lang %{name} --all-name
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post	-p /sbin/ldconfig
+%postun	-p /sbin/ldconfig
+
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS BUGS COPYING NEWS.html ONGOING TODO.txt documents/*.*
-%doc bwidget.CHANGES.TXT bwidget.README.grass
-%doc dist.%{_target_platform}/bwidget/BWman tcltkgrass-docs
+%doc AUTHORS CHANGES COPYING README TODO bwidget.CHANGES.TXT bwidget.README.grass dist.%{_target_platform}/docs/html
 %attr(755,root,root) %{_bindir}/*
-%dir %{_libdir}/grass5
-%attr(755,root,root) %{_libdir}/grass5/bin
-%dir %{_libdir}/grass5/bwidget
-%{_libdir}/grass5/bwidget/*.tcl
-%dir %{_libdir}/grass5/bwidget/demo
-%{_libdir}/grass5/bwidget/demo/*.xbm
-%{_libdir}/grass5/bwidget/demo/[!d]*.tcl
-%{_libdir}/grass5/bwidget/demo/d[!e]*.tcl
-%attr(755,root,root) %{_libdir}/grass5/bwidget/demo/demo.tcl
-%{_libdir}/grass5/bwidget/images
-%dir %{_libdir}/grass5/bwidget/lang
-%lang(de) %{_libdir}/grass5/bwidget/lang/de.rc
-%{_libdir}/grass5/bwidget/lang/en.rc
-%lang(es) %{_libdir}/grass5/bwidget/lang/es.rc
-%lang(fr) %{_libdir}/grass5/bwidget/lang/fr.rc
-%dir %{_libdir}/grass5/dev
-%attr(755,root,root) %{_libdir}/grass5/dev/create_fifos.sh
-%{_libdir}/grass5/dev/fifo*
-%attr(755,root,root) %{_libdir}/grass5/driver
-%dir %{_libdir}/grass5/etc
-%{_libdir}/grass5/etc/Gcolortab
-%attr(755,root,root) %{_libdir}/grass5/etc/bin
-%attr(755,root,root) %{_libdir}/grass5/etc/b.*
-%{_libdir}/grass5/etc/census.docs
-%attr(755,root,root) %{_libdir}/grass5/etc/c[!e]*
-%attr(755,root,root) %{_libdir}/grass5/etc/d[.b]*
-%{_libdir}/grass5/etc/d[ai]*
-%{_libdir}/grass5/etc/help
-%{_libdir}/grass5/etc/nad
-%attr(755,root,root) %{_libdir}/grass5/etc/nad2bin
-%dir %{_libdir}/grass5/etc/nviz2.2
-%attr(755,root,root) %{_libdir}/grass5/etc/nviz2.2/NVWISH2.2
-%{_libdir}/grass5/etc/nviz2.2/bitmaps
-%dir %{_libdir}/grass5/etc/nviz2.2/scripts
-%{_libdir}/grass5/etc/nviz2.2/scripts/[!nps]*
-%attr(755,root,root) %{_libdir}/grass5/etc/nviz2.2/scripts/nviz2.2_script
-%{_libdir}/grass5/etc/nviz2.2/scripts/nviz_init.tcl
-%{_libdir}/grass5/etc/nviz2.2/scripts/p[!a]*
-%{_libdir}/grass5/etc/nviz2.2/scripts/panelIndex
-%{_libdir}/grass5/etc/nviz2.2/scripts/panel_[!m]*
-%{_libdir}/grass5/etc/nviz2.2/scripts/panel_m[!k]*
-%attr(755,root,root) %{_libdir}/grass5/etc/nviz2.2/scripts/panel_mkdspf.tcl
-%{_libdir}/grass5/etc/nviz2.2/scripts/s[!c]*
-%{_libdir}/grass5/etc/nviz2.2/scripts/script_support.tcl
-%attr(755,root,root) %{_libdir}/grass5/etc/nviz2.2/scripts/script_[!s]*
-%dir %{_libdir}/grass5/etc/paint
-%attr(755,root,root) %{_libdir}/grass5/etc/paint/driver*
-%{_libdir}/grass5/etc/paint/ps.devices
-%attr(755,root,root) %{_libdir}/grass5/etc/paint/*.test
-%attr(755,root,root) %{_libdir}/grass5/etc/paint/patcc
-%{_libdir}/grass5/etc/paint/header
-%{_libdir}/grass5/etc/paint/patterns*
-%{_libdir}/grass5/etc/paint/prolog.ps
-%attr(755,root,root) %{_libdir}/grass5/etc/water
-%{_libdir}/grass5/etc/FIPS.code
-%attr(755,root,root) %{_libdir}/grass5/etc/[Iilv]*
-%attr(755,root,root) %{_libdir}/grass5/etc/echo
-%{_libdir}/grass5/etc/el*
-%{_libdir}/grass5/etc/font.bin
-%attr(755,root,root) %{_libdir}/grass5/etc/font_2_bin
-%attr(755,root,root) %{_libdir}/grass5/etc/frame.*
-%{_libdir}/grass5/etc/freetypecap
-%attr(755,root,root) %{_libdir}/grass5/etc/front.end
-%attr(755,root,root) %{_libdir}/grass5/etc/ge*
-%{_libdir}/grass5/etc/grass_intro
-%attr(755,root,root) %{_libdir}/grass5/etc/mod*
-%attr(755,root,root) %{_libdir}/grass5/etc/mon.*
-%{_libdir}/grass5/etc/monitorcap
-%attr(755,root,root) %{_libdir}/grass5/etc/permut
-%{_libdir}/grass5/etc/projections
-%attr(755,root,root) %{_libdir}/grass5/etc/r[!g]*
-%{_libdir}/grass5/etc/rgb.txt
-%attr(755,root,root) %{_libdir}/grass5/etc/s[!t]*
-%{_libdir}/grass5/etc/state*
-%{_libdir}/grass5/fonts
-%attr(755,root,root) %{_libdir}/grass5/scripts
-%dir %{_libdir}/grass5/tcltkgrass
-%dir %{_libdir}/grass5/tcltkgrass/main
-%{_libdir}/grass5/tcltkgrass/main/[!t]*.tcl
-%attr(755,root,root) %{_libdir}/grass5/tcltkgrass/main/pause
-%{_libdir}/grass5/tcltkgrass/main/t[!k]*.tcl
-%attr(755,root,root) %{_libdir}/grass5/tcltkgrass/main/tksys.tcl
-%dir %{_libdir}/grass5/tcltkgrass/module
-%{_libdir}/grass5/tcltkgrass/module/[cdginprsv]*
-%{_libdir}/grass5/tcltkgrass/module/m[!i]*
-%attr(755,root,root) %{_libdir}/grass5/tcltkgrass/module/missing_modules.sh
-%dir %{_libdir}/grass5/tcltkgrass/script
-%attr(755,root,root) %{_libdir}/grass5/tcltkgrass/script/[!g]*
-%attr(755,root,root) %{_libdir}/grass5/tcltkgrass/script/g.*
-%{_libdir}/grass5/tcltkgrass/script/gis_set.tcl
-%{_libdir}/grass5/txt
+%attr(755,root,root) %{_libdir}/*.so
+%dir %{_libdir}/grass-%{version}
+%attr(755,root,root) %{_libdir}/grass-%{version}/bin
+%dir %{_libdir}/grass-%{version}/bwidget
+%{_libdir}/grass-%{version}/bwidget/*.tcl
+%{_libdir}/grass-%{version}/bwidget/images
+%dir %{_libdir}/grass-%{version}/bwidget/lang
+%lang(de) %{_libdir}/grass-%{version}/bwidget/lang/de.rc
+%{_libdir}/grass-%{version}/bwidget/lang/en.rc
+%lang(es) %{_libdir}/grass-%{version}/bwidget/lang/es.rc
+%lang(fr) %{_libdir}/grass-%{version}/bwidget/lang/fr.rc
+%attr(755,root,root) %{_libdir}/grass-%{version}/driver
+%dir %{_libdir}/grass-%{version}/etc
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/c[!e]*
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/d[.b]*
+%{_libdir}/grass-%{version}/etc/d[ai]*
+%dir %{_libdir}/grass-%{version}/etc/dm
+%{_libdir}/grass-%{version}/etc/dm/*.gif
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/dm/*.tcl
+%dir %{_libdir}/grass-%{version}/etc/dm/script
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/dm/script/*
+%dir %{_libdir}/grass-%{version}/etc/form
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/form/form
+%{_libdir}/grass-%{version}/etc/form/*.tcl
+%{_libdir}/grass-%{version}/etc/gtcltk
+%dir %{_libdir}/grass-%{version}/etc/msgs
+%lang(ru) %{_libdir}/grass-%{version}/etc/msgs/ru.msg
+%{_libdir}/grass-%{version}/etc/nad
+%dir %{_libdir}/grass-%{version}/etc/nviz2.2
+%{_libdir}/grass-%{version}/etc/nviz2.2/bitmaps
+%dir %{_libdir}/grass-%{version}/etc/nviz2.2/scripts
+%{_libdir}/grass-%{version}/etc/nviz2.2/scripts/[!ns]*
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/nviz2.2/scripts/nviz2.2_script
+%{_libdir}/grass-%{version}/etc/nviz2.2/scripts/nviz_init.tcl
+%{_libdir}/grass-%{version}/etc/nviz2.2/scripts/s[!c]*
+%{_libdir}/grass-%{version}/etc/nviz2.2/scripts/script_support.tcl
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/nviz2.2/scripts/script_[!s]*
+%{_libdir}/grass-%{version}/etc/ogr_csv
+%dir %{_libdir}/grass-%{version}/etc/paint
+%{_libdir}/grass-%{version}/etc/paint/prolog.ps
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/water
+%{_libdir}/grass-%{version}/etc/FIPS.code
+%{_libdir}/grass-%{version}/etc/VERSION*
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/[Iilv]*
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/echo
+%{_libdir}/grass-%{version}/etc/el*
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/epsg_option.tcl
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/frame.*
+%{_libdir}/grass-%{version}/etc/freetypecap
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/g.mapsets.tcl
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/gis_set.tcl
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/grass-run.sh
+%{_libdir}/grass-%{version}/etc/grass_intro
+%{_libdir}/grass-%{version}/etc/gui.tcl
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/help.tcl
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/mon.*
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/make_location_epsg.sh
+%{_libdir}/grass-%{version}/etc/monitorcap
+%{_libdir}/grass-%{version}/etc/projections
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/r[!g]*
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/photo.*
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/s[!t]*
+%{_libdir}/grass-%{version}/etc/state*
+%{_libdir}/grass-%{version}/etc/welcome
+%{_libdir}/grass-%{version}/fonts
+%attr(755,root,root) %{_libdir}/grass-%{version}/scripts
 %{_mandir}/man1/*
 
 %files devel
 %defattr(644,root,root,755)
-%{_includedir}/grass5
+%{_includedir}/grass60
 %{_libdir}/*.a
