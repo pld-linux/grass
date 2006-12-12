@@ -1,11 +1,11 @@
---- grass-6.0.1/include/Make/Shlib.make.orig	2005-08-21 17:20:46.000000000 +0200
-+++ grass-6.0.1/include/Make/Shlib.make	2005-10-20 18:23:34.037259520 +0200
-@@ -11,7 +11,7 @@
+--- grass-6.2.0/include/Make/Shlib.make.orig	2006-02-10 16:31:42.000000000 +0100
++++ grass-6.2.0/include/Make/Shlib.make	2006-12-12 08:22:03.995794084 +0100
+@@ -15,7 +15,7 @@
  LDFLAGS += $(SHLIB_LDFLAGS)
  
  $(SHLIB): $(SHLIB_OBJS)
--	$(SHLIB_LD) -o $@ $(LDFLAGS) $^ $(EXTRA_LIBS) && ln -f -s $(notdir $@) $(patsubst %.$(GRASS_VERSION_NUMBER)$(SHLIB_SUFFIX),%$(SHLIB_SUFFIX),$@)
-+	$(SHLIB_LD) -o $@ -Wl,-soname,$(notdir $@) $(LDFLAGS) $^ $(EXTRA_LIBS) && ln -f -s $(notdir $@) $(patsubst %.$(GRASS_VERSION_NUMBER)$(SHLIB_SUFFIX),%$(SHLIB_SUFFIX),$@)
+-	$(SHLIB_LD) -o $@ $(LDFLAGS) $^ $(EXTRA_LIBS) && if [ -z "${MINGW}" ] ; then ln -f -s $(notdir $@) $(patsubst %.$(GRASS_VERSION_NUMBER)$(SHLIB_SUFFIX),%$(SHLIB_SUFFIX),$@); fi
++	$(SHLIB_LD) -o $@ -Wl,-soname,$(notdir $@) $(LDFLAGS) $^ $(EXTRA_LIBS) && if [ -z "${MINGW}" ] ; then ln -f -s $(notdir $@) $(patsubst %.$(GRASS_VERSION_NUMBER)$(SHLIB_SUFFIX),%$(SHLIB_SUFFIX),$@); fi
  
  shlib: $(SHLIB)
  
