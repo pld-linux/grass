@@ -1,0 +1,32 @@
+--- grass-6.2.0/lib/gis/Makefile.orig	2006-04-18 23:12:22.000000000 +0200
++++ grass-6.2.0/lib/gis/Makefile	2006-12-12 20:44:00.568648997 +0100
+@@ -1,7 +1,7 @@
+ MODULE_TOPDIR = ../..
+ 
+ LIB_NAME = $(GIS_LIBNAME)
+-EXTRA_LIBS = $(XDRLIB) $(DATETIMELIB) $(INTLLIB)
++EXTRA_LIBS = $(XDRLIB) $(DATETIMELIB) $(INTLLIB) -lm
+ 
+ include $(MODULE_TOPDIR)/include/Make/Lib.make
+ include $(MODULE_TOPDIR)/include/Make/Doxygen.make
+--- grass-6.2.0/lib/vector/rtree/Makefile.orig	2006-02-09 04:08:58.000000000 +0100
++++ grass-6.2.0/lib/vector/rtree/Makefile	2006-12-12 20:42:37.435911532 +0100
+@@ -9,6 +9,8 @@
+ 	rect.o \
+ 	split_q.o 
+ 
++EXTRA_LIBS = -lm
++
+ include $(MODULE_TOPDIR)/include/Make/Lib.make
+ 
+ RTLINC = $(ARCH_INCDIR)/rtree
+--- grass-6.2.0/lib/vector/diglib/Makefile.orig	2005-11-10 12:05:03.000000000 +0100
++++ grass-6.2.0/lib/vector/diglib/Makefile	2006-12-12 20:43:39.687459045 +0100
+@@ -1,6 +1,6 @@
+ MODULE_TOPDIR = ../../..
+ 
+-EXTRA_LIBS=$(GISLIB) $(RTREELIB)
++EXTRA_LIBS=$(GISLIB) $(RTREELIB) -lm
+ 
+ LIB_NAME = $(DIG2_LIBNAME)
+ 
