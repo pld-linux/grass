@@ -1,3 +1,11 @@
+#
+# Conditional build, see http://grass.itc.it/grass61/source/REQUIREMENTS.html
+# for description of optional requirements.
+%bcond_without	tcl		# disable gui and nviz
+%bcond_without	mysql	# disable mysql support
+%bcond_without	odbc	# disable unixODBC support
+%bcond_without	xanim	# disable xanim module
+#
 Summary:	The Geographic Resources Analysis Support System
 Summary(pl):	System obs³uguj±cy analizê zasobów geograficznych
 Name:		grass
@@ -11,12 +19,12 @@ Source0:	http://grass.itc.it/grass62/source/%{name}-%{version}.tar.gz
 Patch0:		%{name}-soname.patch
 Patch1:		%{name}-link.patch
 URL:		http://grass.itc.it/
-BuildRequires:	OpenGL-GLU-devel
+%{?with_tcl:BuildRequires:	OpenGL-GLU-devel}
 BuildRequires:	awk
 BuildRequires:	bison
 BuildRequires:	blas-devel
 BuildRequires:	ffmpeg-devel
-BuildRequires:	fftw-devel
+BuildRequires:	fftw3-devel
 BuildRequires:	flex
 BuildRequires:	freetype-devel >= 2.0.0
 BuildRequires:	gcc-g77
@@ -29,8 +37,8 @@ BuildRequires:	libpng-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel
 BuildRequires:	man
-BuildRequires:	motif-devel
-BuildRequires:	mysql-devel
+%{?with_xanim:BuildRequires:	motif-devel}
+%{?with_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	ncurses-devel
 BuildRequires:	postgresql-backend-devel
 BuildRequires:	postgresql-devel
@@ -40,9 +48,9 @@ BuildRequires:	python-devel >= 1:2.3
 BuildRequires:	readline-devel
 BuildRequires:	sed >= 4.0
 BuildRequires:	sqlite3-devel >= 3.0
-BuildRequires:	tcl-devel >= 8.4
-BuildRequires:	tk-devel >= 8.4
-BuildRequires:	unixODBC-devel
+%{?with_tcl:BuildRequires:	tcl-devel >= 8.4}
+%{?with_tcl:BuildRequires:	tk-devel >= 8.4}
+%{?with_odbc:BuildRequires:	unixODBC-devel}
 BuildRequires:	zlib-devel
 # R language?
 Requires:	proj >= 4.4.6
@@ -146,16 +154,18 @@ CPPFLAGS="-I/usr/include/ncurses"; export CPPFLAGS
 	--with-freetype \
 	--with-freetype-includes=/usr/include/freetype2 \
 	--with-lapack \
-	--with-motif \
-	--with-mysql \
-	--with-mysql-includes=/usr/include/mysql \
+	%{?with_xanim:--with-motif} \
+	%{?with_mysql:--with-mysql} \
+	%{?with_mysql:--with-mysql-includes=/usr/include/mysql} \
 	--with-nls \
-	--with-odbc \
+	%{?with_odbc:--with-odbc} \
+	--with%{!?with_tcl:out}-opengl \
 	--with-postgres-includes=/usr/include/postgresql/server \
 	--with-proj-share=/usr/share/proj \
 	--with-python \
 	--with-readline \
-	--with-sqlite
+	--with-sqlite \
+	--with%{!?with_tcl:out}-tcltk
 %{__make}
 
 %install
@@ -210,28 +220,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/grass-%{version}/etc/c[!e]*
 %attr(755,root,root) %{_libdir}/grass-%{version}/etc/d[.b]*
 %{_libdir}/grass-%{version}/etc/d[ai]*
-%dir %{_libdir}/grass-%{version}/etc/dm
-%{_libdir}/grass-%{version}/etc/dm/*.gif
-%attr(755,root,root) %{_libdir}/grass-%{version}/etc/dm/*.tcl
-%dir %{_libdir}/grass-%{version}/etc/dm/script
-%attr(755,root,root) %{_libdir}/grass-%{version}/etc/dm/script/*
-%attr(755,root,root) %{_libdir}/grass-%{version}/etc/file_option.tcl
-%dir %{_libdir}/grass-%{version}/etc/form
-%attr(755,root,root) %{_libdir}/grass-%{version}/etc/form/form
-%{_libdir}/grass-%{version}/etc/form/*.tcl
-%{_libdir}/grass-%{version}/etc/gem
 %{_libdir}/grass-%{version}/etc/gintro.gif
-%dir %{_libdir}/grass-%{version}/etc/gm
-%attr(755,root,root) %{_libdir}/grass-%{version}/etc/gm/*.tcl
-%{_libdir}/grass-%{version}/etc/gm/*.gif
-%dir %{_libdir}/grass-%{version}/etc/gm/script
-%attr(755,root,root) %{_libdir}/grass-%{version}/etc/gm/script/*
 %attr(755,root,root) %{_libdir}/grass-%{version}/etc/grass-xterm-wrapper
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/file_option.tcl
+%{_libdir}/grass-%{version}/etc/gem
 %{_libdir}/grass-%{version}/etc/grass_write_ascii.style
 %dir %{_libdir}/grass-%{version}/etc/gui
 %{_libdir}/grass-%{version}/etc/gui/icons
-%dir %{_libdir}/grass-%{version}/etc/gui/menus
-%attr(755,root,root) %{_libdir}/grass-%{version}/etc/gui/menus/menu.tcl
 %{_libdir}/grass-%{version}/etc/gtcltk
 %dir %{_libdir}/grass-%{version}/etc/msgs
 %lang(cs) %{_libdir}/grass-%{version}/etc/msgs/cs.msg
@@ -245,16 +240,6 @@ rm -rf $RPM_BUILD_ROOT
 %lang(tr) %{_libdir}/grass-%{version}/etc/msgs/tr.msg
 %lang(vi) %{_libdir}/grass-%{version}/etc/msgs/vi.msg
 %{_libdir}/grass-%{version}/etc/nad
-%dir %{_libdir}/grass-%{version}/etc/nviz2.2
-%{_libdir}/grass-%{version}/etc/nviz2.2/bitmaps
-%dir %{_libdir}/grass-%{version}/etc/nviz2.2/scripts
-%{_libdir}/grass-%{version}/etc/nviz2.2/scripts/[!ns]*
-%attr(755,root,root) %{_libdir}/grass-%{version}/etc/nviz2.2/scripts/nviz2.2_script
-%{_libdir}/grass-%{version}/etc/nviz2.2/scripts/nviz_init.tcl
-%{_libdir}/grass-%{version}/etc/nviz2.2/scripts/nviz_params
-%{_libdir}/grass-%{version}/etc/nviz2.2/scripts/s[!c]*
-%{_libdir}/grass-%{version}/etc/nviz2.2/scripts/script_support.tcl
-%attr(755,root,root) %{_libdir}/grass-%{version}/etc/nviz2.2/scripts/script_[!s]*
 %{_libdir}/grass-%{version}/etc/ogr_csv
 %dir %{_libdir}/grass-%{version}/etc/paint
 %{_libdir}/grass-%{version}/etc/paint/patterns
@@ -287,6 +272,34 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/grass-%{version}/fonts
 %attr(755,root,root) %{_libdir}/grass-%{version}/scripts
 %{_mandir}/man1/*
+
+%if %{with tcl}
+%dir %{_libdir}/grass-%{version}/etc/dm
+%{_libdir}/grass-%{version}/etc/dm/*.gif
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/dm/*.tcl
+%dir %{_libdir}/grass-%{version}/etc/dm/script
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/dm/script/*
+%dir %{_libdir}/grass-%{version}/etc/form
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/form/form
+%{_libdir}/grass-%{version}/etc/form/*.tcl
+%dir %{_libdir}/grass-%{version}/etc/gm
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/gm/*.tcl
+%{_libdir}/grass-%{version}/etc/gm/*.gif
+%dir %{_libdir}/grass-%{version}/etc/gm/script
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/gm/script/*
+%dir %{_libdir}/grass-%{version}/etc/gui/menus
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/gui/menus/menu.tcl
+%dir %{_libdir}/grass-%{version}/etc/nviz2.2
+%{_libdir}/grass-%{version}/etc/nviz2.2/bitmaps
+%dir %{_libdir}/grass-%{version}/etc/nviz2.2/scripts
+%{_libdir}/grass-%{version}/etc/nviz2.2/scripts/[!ns]*
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/nviz2.2/scripts/nviz2.2_script
+%{_libdir}/grass-%{version}/etc/nviz2.2/scripts/nviz_init.tcl
+%{_libdir}/grass-%{version}/etc/nviz2.2/scripts/nviz_params
+%{_libdir}/grass-%{version}/etc/nviz2.2/scripts/s[!c]*
+%{_libdir}/grass-%{version}/etc/nviz2.2/scripts/script_support.tcl
+%attr(755,root,root) %{_libdir}/grass-%{version}/etc/nviz2.2/scripts/script_[!s]*
+%endif
 
 %files devel
 %defattr(644,root,root,755)
