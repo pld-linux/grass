@@ -9,13 +9,13 @@
 Summary:	The Geographic Resources Analysis Support System
 Summary(pl):	System obs³uguj±cy analizê zasobów geograficznych
 Name:		grass
-Version:	6.2.0
+Version:	6.2.1
 Release:	1
 Epoch:		1
 License:	GPL
 Group:		X11/Applications
 Source0:	http://grass.itc.it/grass62/source/%{name}-%{version}.tar.gz
-# Source0-md5:	678de1dbbc0e20001f3de6b1be7565b4
+# Source0-md5:	cbe14d34503a75e8102d2f56c7b527a7
 Patch0:		%{name}-soname.patch
 Patch1:		%{name}-link.patch
 URL:		http://grass.itc.it/
