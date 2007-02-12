@@ -7,7 +7,7 @@
 %bcond_without	xanim	# disable xanim module
 #
 Summary:	The Geographic Resources Analysis Support System
-Summary(pl):	System obs³uguj±cy analizê zasobów geograficznych
+Summary(pl.UTF-8):   System obsÅ‚ugujÄ…cy analizÄ™ zasobÃ³w geograficznych
 Name:		grass
 Version:	6.2.1
 Release:	1
@@ -70,20 +70,20 @@ multispectral image processing, point data management and general data
 management. It also has tools for interfacing with digitizers,
 scanners, and the RIM, Informix, Postgres, and Oracle databases.
 
-%description -l pl
-GRASS (System Wspierania Analiz Zasobów Geograficznych) jest rastrowym
+%description -l pl.UTF-8
+GRASS (System Wspierania Analiz ZasobÃ³w Geograficznych) jest rastrowym
 oraz wektorowym systemem GIS (System Informacji Geograficznej),
-obróbki obrazów, tworzenia grafiki oraz modelowania przestrzennego.
-GRASS zawiera wiele modu³ów wspomagaj±cych manipulacjê danymi
-rastrowymi i wektorowymi, renderowanie obrazów na monitorze lub
-papierze, obróbkê multispektralnych obrazów, punktowe oraz ogólne
-zarz±dzanie danymi. Zawiera równie¿ narzêdzia do wspó³pracy z
+obrÃ³bki obrazÃ³w, tworzenia grafiki oraz modelowania przestrzennego.
+GRASS zawiera wiele moduÅ‚Ã³w wspomagajÄ…cych manipulacjÄ™ danymi
+rastrowymi i wektorowymi, renderowanie obrazÃ³w na monitorze lub
+papierze, obrÃ³bkÄ™ multispektralnych obrazÃ³w, punktowe oraz ogÃ³lne
+zarzÄ…dzanie danymi. Zawiera rÃ³wnieÅ¼ narzÄ™dzia do wspÃ³Å‚pracy z
 digitizerami, skanerami oraz bazami RIM, Informix, Postgres oraz
 Oracle.
 
 %package OpenGL
 Summary:	NVIZ - a 3D-tool for GRASS
-Summary(pl):	NVIZ - narzêdzie 3D dla GRASSa
+Summary(pl.UTF-8):   NVIZ - narzÄ™dzie 3D dla GRASSa
 Group:		X11/Applications
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -94,47 +94,47 @@ optionally using thematic coloring, draping GRASS vector files over
 the surfaces, and displaying GRASS site files either draped on the
 surfaces or as 3D point locations.
 
-%description OpenGL -l pl
-Pakiet zawiera modu³ nviz, który rozszerza funkcjonalno¶æ systemu
-GRASS o mo¿liwo¶æ realistycznego renderowania wielu powierzchni w
-trójwymiarowej przestrzeni. Na renderowanych powierzchniach, które
-mog± byæ tematycznie kolorowane, mo¿na zawieszaæ pliki wektorowe
+%description OpenGL -l pl.UTF-8
+Pakiet zawiera moduÅ‚ nviz, ktÃ³ry rozszerza funkcjonalnoÅ›Ä‡ systemu
+GRASS o moÅ¼liwoÅ›Ä‡ realistycznego renderowania wielu powierzchni w
+trÃ³jwymiarowej przestrzeni. Na renderowanych powierzchniach, ktÃ³re
+mogÄ… byÄ‡ tematycznie kolorowane, moÅ¼na zawieszaÄ‡ pliki wektorowe
 GRASSa.
 
 %package pg
 Summary:	PostgreSQL database interface
-Summary(pl):	Interfejs do bazy PostgreSQL
+Summary(pl.UTF-8):   Interfejs do bazy PostgreSQL
 Group:		X11/Applications
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description pg
 PostgreSQL database interface for GRASS.
 
-%description pg -l pl
+%description pg -l pl.UTF-8
 Interfejs do bazy PostgreSQL dla GRASSa.
 
 %package odbc
 Summary:	ODBC database interface
-Summary(pl):	Interfejs ODBC dla GRASSa
+Summary(pl.UTF-8):   Interfejs ODBC dla GRASSa
 Group:		X11/Applications
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
 %description odbc
 ODBC database interface for GRASS.
 
-%description odbc -l pl
+%description odbc -l pl.UTF-8
 Interfejs ODBC dla GRASSa.
 
 %package devel
 Summary:	Header files and static libraries for GRASS
-Summary(pl):	Pliki nag³ówkowe i biblioteki statyczne systemu GRASS
+Summary(pl.UTF-8):   Pliki nagÅ‚Ã³wkowe i biblioteki statyczne systemu GRASS
 Group:		X11/Development/Libraries
 
 %description devel
 Header files and static libraries for GRASS.
 
-%description devel -l pl
-Pliki nag³ówkowe i biblioteki statyczne systemu GRASS.
+%description devel -l pl.UTF-8
+Pliki nagÅ‚Ã³wkowe i biblioteki statyczne systemu GRASS.
 
 %prep
 %setup -q
