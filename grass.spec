@@ -7,7 +7,7 @@
 %bcond_without	xanim	# disable xanim module
 #
 Summary:	The Geographic Resources Analysis Support System
-Summary(pl.UTF-8):   System obsługujący analizę zasobów geograficznych
+Summary(pl.UTF-8):	System obsługujący analizę zasobów geograficznych
 Name:		grass
 Version:	6.2.1
 Release:	1
@@ -83,7 +83,7 @@ Oracle.
 
 %package OpenGL
 Summary:	NVIZ - a 3D-tool for GRASS
-Summary(pl.UTF-8):   NVIZ - narzędzie 3D dla GRASSa
+Summary(pl.UTF-8):	NVIZ - narzędzie 3D dla GRASSa
 Group:		X11/Applications
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -103,7 +103,7 @@ GRASSa.
 
 %package pg
 Summary:	PostgreSQL database interface
-Summary(pl.UTF-8):   Interfejs do bazy PostgreSQL
+Summary(pl.UTF-8):	Interfejs do bazy PostgreSQL
 Group:		X11/Applications
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -115,7 +115,7 @@ Interfejs do bazy PostgreSQL dla GRASSa.
 
 %package odbc
 Summary:	ODBC database interface
-Summary(pl.UTF-8):   Interfejs ODBC dla GRASSa
+Summary(pl.UTF-8):	Interfejs ODBC dla GRASSa
 Group:		X11/Applications
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 
@@ -127,7 +127,7 @@ Interfejs ODBC dla GRASSa.
 
 %package devel
 Summary:	Header files and static libraries for GRASS
-Summary(pl.UTF-8):   Pliki nagłówkowe i biblioteki statyczne systemu GRASS
+Summary(pl.UTF-8):	Pliki nagłówkowe i biblioteki statyczne systemu GRASS
 Group:		X11/Development/Libraries
 
 %description devel
