@@ -18,6 +18,7 @@ Source0:	http://grass.itc.it/grass62/source/%{name}-%{version}.tar.gz
 # Source0-md5:	abae40eff2b99b44e8d85f6eb9007c12
 Patch0:		%{name}-soname.patch
 Patch1:		%{name}-link.patch
+Patch2:		%{name}-ffmpeg.patch
 URL:		http://grass.itc.it/
 %{?with_tcl:BuildRequires:	OpenGL-GLU-devel}
 BuildRequires:	awk
@@ -140,6 +141,7 @@ Pliki nagłówkowe i biblioteki statyczne systemu GRASS.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 CPPFLAGS="-I/usr/include/ncurses"; export CPPFLAGS
@@ -231,9 +233,11 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/grass-%{version}/etc/msgs
 %lang(cs) %{_libdir}/grass-%{version}/etc/msgs/cs.msg
 %lang(de) %{_libdir}/grass-%{version}/etc/msgs/de.msg
+%lang(es) %{_libdir}/grass-%{version}/etc/msgs/es.msg
 %lang(fr) %{_libdir}/grass-%{version}/etc/msgs/fr.msg
 %lang(it) %{_libdir}/grass-%{version}/etc/msgs/it.msg
 %lang(ja) %{_libdir}/grass-%{version}/etc/msgs/ja.msg
+%lang(lv) %{_libdir}/grass-%{version}/etc/msgs/lv.msg
 %lang(pl) %{_libdir}/grass-%{version}/etc/msgs/pl.msg
 %lang(pt_BR) %{_libdir}/grass-%{version}/etc/msgs/pt_br.msg
 %lang(ru) %{_libdir}/grass-%{version}/etc/msgs/ru.msg
