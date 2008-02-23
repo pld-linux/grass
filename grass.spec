@@ -142,7 +142,7 @@ Pliki nagłówkowe i biblioteki statyczne systemu GRASS.
 
 %prep
 %setup -q -n %{name}-%{gver}
-#%patch0 -p1
+%patch0 -p1
 %patch1 -p1
 #%patch2 -p1
 
