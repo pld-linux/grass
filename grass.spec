@@ -9,6 +9,7 @@
 Summary:	The Geographic Resources Analysis Support System
 Summary(pl.UTF-8):	System obsługujący analizę zasobów geograficznych
 Name:		grass
+# see DEVEL branch before upgrading to 6.3.0
 Version:	6.2.2
 Release:	1
 Epoch:		1
