@@ -165,6 +165,7 @@ CPPFLAGS="-I/usr/include/ncurses"; export CPPFLAGS
 	--with-nls \
 	%{?with_odbc:--with-odbc} \
 	--with%{!?with_tcl:out}-opengl \
+	--with-postgres \
 	--with-postgres-includes=/usr/include/postgresql/server \
 	--with-proj-share=/usr/share/proj \
 	--with-python \
