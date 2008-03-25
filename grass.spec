@@ -7,7 +7,7 @@
 %bcond_without	xanim	# disable xanim module
 #
 
-%define		rcver	RC5
+%define		rcver	RC6
 Summary:	The Geographic Resources Analysis Support System
 Summary(pl.UTF-8):	System obsługujący analizę zasobów geograficznych
 Name:		grass
@@ -17,7 +17,7 @@ Epoch:		1
 License:	GPL
 Group:		X11/Applications
 Source0:	http://grass.osgeo.org/grass63/source/%{name}-%{version}%{rcver}.tar.gz
-# Source0-md5:	8c66b3d5393a3ffe969c4b71efdd287e
+# Source0-md5:	16c70918f0f92fe1edb787f4bf2f4177
 Patch0:		%{name}-soname.patch
 Patch1:		%{name}-link.patch
 Patch2:		%{name}-ffmpeg.patch
