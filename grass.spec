@@ -7,17 +7,16 @@
 %bcond_without	xanim	# disable xanim module
 #
 
-%define		rcver	RC6
 Summary:	The Geographic Resources Analysis Support System
 Summary(pl.UTF-8):	System obsługujący analizę zasobów geograficznych
 Name:		grass
 Version:	6.3.0
-Release:	0.%{rcver}.1
+Release:	1
 Epoch:		1
 License:	GPL
 Group:		X11/Applications
-Source0:	http://grass.osgeo.org/grass63/source/%{name}-%{version}%{rcver}.tar.gz
-# Source0-md5:	16c70918f0f92fe1edb787f4bf2f4177
+Source0:	http://grass.osgeo.org/grass63/source/%{name}-%{version}.tar.gz
+# Source0-md5:	7dce50a076e2481733148ba34cbebc07
 Patch0:		%{name}-soname.patch
 Patch1:		%{name}-link.patch
 Patch2:		%{name}-ffmpeg.patch
@@ -59,7 +58,7 @@ BuildRequires:	zlib-devel
 Requires:	proj >= 4.4.6
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		gver	%{version}%{rcver}
+%define		gver	%{version}
 %define		_noautoreqdep   libGL.so.1 libGLU.so.1
 %define		_sysconfdir	/etc/X11
 %define		_target_platform %(echo %{_target_cpu}-%{_target_vendor}-%{_host_os} | sed -e 's/athlon/i686/;s/ppc/powerpc/;s/amd64/x86_64/')
@@ -141,7 +140,7 @@ Header files and static libraries for GRASS.
 Pliki nagłówkowe i biblioteki statyczne systemu GRASS.
 
 %prep
-%setup -q -n %{name}-%{gver}
+%setup -q
 %patch0 -p1
 %patch1 -p1
 #%patch2 -p1
