@@ -1,25 +1,23 @@
 #
 # Conditional build, see http://grass.itc.it/grass61/source/REQUIREMENTS.html
 # for description of optional requirements.
-%bcond_without	tcl		# disable gui and nviz
-%bcond_without	mysql	# disable mysql support
+%bcond_without	tcl	# disable gui and nviz
+%bcond_without	mysql	# disable MySQL support
 %bcond_without	odbc	# disable unixODBC support
 %bcond_without	xanim	# disable xanim module
 #
-
 Summary:	The Geographic Resources Analysis Support System
 Summary(pl.UTF-8):	System obsługujący analizę zasobów geograficznych
 Name:		grass
 Version:	6.3.0
 Release:	1
 Epoch:		1
-License:	GPL
+License:	GPL v2+
 Group:		X11/Applications
 Source0:	http://grass.osgeo.org/grass63/source/%{name}-%{version}.tar.gz
 # Source0-md5:	7dce50a076e2481733148ba34cbebc07
 Patch0:		%{name}-soname.patch
 Patch1:		%{name}-link.patch
-Patch2:		%{name}-ffmpeg.patch
 URL:		http://grass.osgeo.org/
 %{?with_tcl:BuildRequires:	OpenGL-GLU-devel}
 BuildRequires:	awk
@@ -143,7 +141,6 @@ Pliki nagłówkowe i biblioteki statyczne systemu GRASS.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-#%patch2 -p1
 
 %build
 CPPFLAGS="-I/usr/include/ncurses"; export CPPFLAGS
@@ -208,8 +205,9 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS CHANGES COPYING README TODO bwidget.CHANGES.TXT bwidget.README.grass dist.%{_target_platform}/docs/html
-%attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_libdir}/*.so
+%attr(755,root,root) %{_bindir}/gem6
+%attr(755,root,root) %{_bindir}/grass63
+%attr(755,root,root) %{_libdir}/libgrass_*.so
 %dir %{_libdir}/grass-%{gver}
 %attr(755,root,root) %{_libdir}/grass-%{gver}/bin
 %dir %{_libdir}/grass-%{gver}/bwidget
@@ -227,6 +225,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/d[.b]*
 %{_libdir}/grass-%{gver}/etc/d[ai]*
 %{_libdir}/grass-%{gver}/etc/gintro.gif
+%{_libdir}/grass-%{gver}/etc/grass*.ico
+%{_libdir}/grass-%{gver}/etc/grass-interface.dtd
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/grass-xterm-wrapper
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/file_option.tcl
 %{_libdir}/grass-%{gver}/etc/fontcap
@@ -235,21 +235,33 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/grocat
 %dir %{_libdir}/grass-%{gver}/etc/gui
 %{_libdir}/grass-%{gver}/etc/gui/icons
+%dir %{_libdir}/grass-%{gver}/etc/gui/scripts
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/gui/scripts/*
 %{_libdir}/grass-%{gver}/etc/gtcltk
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/mod*
 %dir %{_libdir}/grass-%{gver}/etc/msgs
+%lang(am) %{_libdir}/grass-%{gver}/etc/msgs/am.msg
+%lang(ar) %{_libdir}/grass-%{gver}/etc/msgs/ar.msg
 %lang(cs) %{_libdir}/grass-%{gver}/etc/msgs/cs.msg
 %lang(de) %{_libdir}/grass-%{gver}/etc/msgs/de.msg
+%lang(el) %{_libdir}/grass-%{gver}/etc/msgs/el.msg
 %lang(es) %{_libdir}/grass-%{gver}/etc/msgs/es.msg
 %lang(fr) %{_libdir}/grass-%{gver}/etc/msgs/fr.msg
+%lang(hi) %{_libdir}/grass-%{gver}/etc/msgs/hi.msg
 %lang(it) %{_libdir}/grass-%{gver}/etc/msgs/it.msg
 %lang(ja) %{_libdir}/grass-%{gver}/etc/msgs/ja.msg
+%lang(ko) %{_libdir}/grass-%{gver}/etc/msgs/ko.msg
 %lang(lv) %{_libdir}/grass-%{gver}/etc/msgs/lv.msg
+%lang(mr) %{_libdir}/grass-%{gver}/etc/msgs/mr.msg
 %lang(pl) %{_libdir}/grass-%{gver}/etc/msgs/pl.msg
+%lang(pt) %{_libdir}/grass-%{gver}/etc/msgs/pt.msg
 %lang(pt_BR) %{_libdir}/grass-%{gver}/etc/msgs/pt_br.msg
 %lang(ru) %{_libdir}/grass-%{gver}/etc/msgs/ru.msg
+%lang(sl) %{_libdir}/grass-%{gver}/etc/msgs/sl.msg
+%lang(th) %{_libdir}/grass-%{gver}/etc/msgs/th.msg
 %lang(tr) %{_libdir}/grass-%{gver}/etc/msgs/tr.msg
 %lang(vi) %{_libdir}/grass-%{gver}/etc/msgs/vi.msg
+%lang(zh_CN) %{_libdir}/grass-%{gver}/etc/msgs/zh.msg
 %{_libdir}/grass-%{gver}/etc/nad
 %{_libdir}/grass-%{gver}/etc/ogr_csv
 %dir %{_libdir}/grass-%{gver}/etc/paint
@@ -283,6 +295,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/s[!t]*
 %{_libdir}/grass-%{gver}/etc/state*
 %{_libdir}/grass-%{gver}/etc/welcome
+%{_libdir}/grass-%{gver}/etc/wxpython
 %{_libdir}/grass-%{gver}/fonts
 %attr(755,root,root) %{_libdir}/grass-%{gver}/scripts
 %{_mandir}/man1/*
@@ -299,11 +312,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/grass-%{gver}/etc/gm
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/gm/*.tcl
 %{_libdir}/grass-%{gver}/etc/gm/*.gif
-%dir %{_libdir}/grass-%{gver}/etc/gm/script
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/gm/script/*
-%dir %{_libdir}/grass-%{gver}/etc/gui/menus
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/gui/menus/menu.tcl
 %dir %{_libdir}/grass-%{gver}/etc/nviz2.2
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/nviz2.2/nviz
 %{_libdir}/grass-%{gver}/etc/nviz2.2/bitmaps
 %dir %{_libdir}/grass-%{gver}/etc/nviz2.2/scripts
 %{_libdir}/grass-%{gver}/etc/nviz2.2/scripts/[!ns]*
@@ -317,5 +327,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files devel
 %defattr(644,root,root,755)
+%{_libdir}/libgrass_ismap.a
+%{_libdir}/libgrass_manage.a
+%{_libdir}/libiostream.a
 %{_includedir}/grass63
-%{_libdir}/*.a
