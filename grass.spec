@@ -9,20 +9,20 @@
 Summary:	The Geographic Resources Analysis Support System
 Summary(pl.UTF-8):	System obsługujący analizę zasobów geograficznych
 Name:		grass
-Version:	6.3.0
+Version:	6.4.0
 Release:	1
 Epoch:		1
 License:	GPL v2+
 Group:		X11/Applications
-Source0:	http://grass.osgeo.org/grass63/source/%{name}-%{version}.tar.gz
-# Source0-md5:	7dce50a076e2481733148ba34cbebc07
+Source0:	http://grass.osgeo.org/grass64/source/%{name}-%{version}.tar.gz
+# Source0-md5:	ac3233aa3351f8e060ea48246aa01c7f
 Patch0:		%{name}-soname.patch
-Patch1:		%{name}-link.patch
 URL:		http://grass.osgeo.org/
 %{?with_tcl:BuildRequires:	OpenGL-GLU-devel}
 BuildRequires:	awk
 BuildRequires:	bison
 BuildRequires:	blas-devel
+BuildRequires:	cairo-devel
 BuildRequires:	ffmpeg-devel
 BuildRequires:	fftw3-devel
 BuildRequires:	flex
@@ -51,6 +51,7 @@ BuildRequires:	sqlite3-devel >= 3.0
 %{?with_tcl:BuildRequires:	tcl-devel >= 8.4}
 %{?with_tcl:BuildRequires:	tk-devel >= 8.4}
 %{?with_odbc:BuildRequires:	unixODBC-devel}
+BuildRequires:	wxGTK2-unicode-devel
 BuildRequires:	zlib-devel
 # R language?
 Requires:	proj >= 4.4.6
@@ -140,7 +141,6 @@ Pliki nagłówkowe i biblioteki statyczne systemu GRASS.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %build
 CPPFLAGS="-I/usr/include/ncurses"; export CPPFLAGS
@@ -149,9 +149,10 @@ CPPFLAGS="-I/usr/include/ncurses"; export CPPFLAGS
 	--with-includes=%{_includedir} \
 	--with-libs=%{_libdir} \
 	--with-blas \
+	--with-cairo \
 	--with-cxx \
 	--with-ffmpeg \
-	--with-ffmpeg-includes=/usr/include/ffmpeg \
+	--with-ffmpeg-includes='/usr/include/libavcodec /usr/include/libavformat /usr/include/libswscale' \
 	--with-freetype \
 	--with-freetype-includes=/usr/include/freetype2 \
 	--with-lapack \
@@ -167,7 +168,9 @@ CPPFLAGS="-I/usr/include/ncurses"; export CPPFLAGS
 	--with-python \
 	--with-readline \
 	--with-sqlite \
-	--with%{!?with_tcl:out}-tcltk
+	--with%{!?with_tcl:out}-tcltk \
+	--with-wxwidgets=/usr/bin/wx-gtk2-unicode-config
+# --with-glw requires Motif parts in -lGLw or -lGLwM
 %{__make}
 
 %install
@@ -178,18 +181,18 @@ rm -rf $RPM_BUILD_ROOT
 	BINDIR=$RPM_BUILD_ROOT%{_bindir} \
 	PREFIX=$RPM_BUILD_ROOT%{_libdir}
 
-install -d $RPM_BUILD_ROOT{%{_datadir},%{_includedir}/grass63}
-mv $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/include/* $RPM_BUILD_ROOT%{_includedir}/grass63
+install -d $RPM_BUILD_ROOT{%{_datadir},%{_includedir}/grass64}
+mv $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/include/* $RPM_BUILD_ROOT%{_includedir}/grass64
 mv $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/lib/* $RPM_BUILD_ROOT%{_libdir}
 mv $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/locale $RPM_BUILD_ROOT%{_datadir}
 mv $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/man $RPM_BUILD_ROOT%{_datadir}
 
-sed -i -e 's,^GISBASE=.*,GISBASE=%{_libdir}/grass-%{gver},' $RPM_BUILD_ROOT%{_bindir}/grass63
+sed -i -e 's,^GISBASE=.*,GISBASE=%{_libdir}/grass-%{gver},' $RPM_BUILD_ROOT%{_bindir}/grass64
 
 cp -f lib/external/bwidget/CHANGES.txt bwidget.CHANGES.TXT
 cp -f lib/external/bwidget/README.grass bwidget.README.grass
 
-rm -rf $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/{bwidget/{*.txt,README.grass},docs}
+%{__rm} -r $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/{bwidget/{*.txt,README.grass},docs}
 
 mv -f $RPM_BUILD_ROOT%{_datadir}/locale/{pt_br,pt_BR}
 mv -f $RPM_BUILD_ROOT%{_datadir}/locale/{zh,zh_CN}
@@ -205,8 +208,8 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS CHANGES COPYING README TODO bwidget.CHANGES.TXT bwidget.README.grass dist.%{_target_platform}/docs/html
-%attr(755,root,root) %{_bindir}/gem6
-%attr(755,root,root) %{_bindir}/grass63
+%attr(755,root,root) %{_bindir}/gem64
+%attr(755,root,root) %{_bindir}/grass64
 %attr(755,root,root) %{_libdir}/libgrass_*.so
 %dir %{_libdir}/grass-%{gver}
 %attr(755,root,root) %{_libdir}/grass-%{gver}/bin
@@ -220,25 +223,53 @@ rm -rf $RPM_BUILD_ROOT
 %lang(fr) %{_libdir}/grass-%{gver}/bwidget/lang/fr.rc
 %attr(755,root,root) %{_libdir}/grass-%{gver}/driver
 %dir %{_libdir}/grass-%{gver}/etc
+%{_libdir}/grass-%{gver}/etc/FIPS.code
+%{_libdir}/grass-%{gver}/etc/VERSIONNUMBER
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/Init.sh
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/bmif_to_cell
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/c[!e]*
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/d[.b]*
-%{_libdir}/grass-%{gver}/etc/d[ai]*
-%{_libdir}/grass-%{gver}/etc/gintro.gif
-%{_libdir}/grass-%{gver}/etc/grass*.ico
-%{_libdir}/grass-%{gver}/etc/grass-interface.dtd
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/grass-xterm-wrapper
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/clean_temp
+%{_libdir}/grass-%{gver}/etc/colors
+%{_libdir}/grass-%{gver}/etc/colors.desc
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/current_time_s_ms
+%{_libdir}/grass-%{gver}/etc/d.polar
+%{_libdir}/grass-%{gver}/etc/d.rast.edit.tcl
+%{_libdir}/grass-%{gver}/etc/datum*.table
+%{_libdir}/grass-%{gver}/etc/db.test
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/echo
+%{_libdir}/grass-%{gver}/etc/element_list
+%{_libdir}/grass-%{gver}/etc/ellipse.table
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/epsg_option.tcl
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/file_option.tcl
 %{_libdir}/grass-%{gver}/etc/fontcap
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/frame.*
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/g.mapsets.tcl
 %{_libdir}/grass-%{gver}/etc/gem
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/gis_set.tcl
+%{_libdir}/grass-%{gver}/etc/grass-interface.dtd
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/grass-run.sh
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/grass-xterm-wrapper
+%{_libdir}/grass-%{gver}/etc/grass_intro
 %{_libdir}/grass-%{gver}/etc/grass_write_ascii.style
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/grocat
+%{_libdir}/grass-%{gver}/etc/gtcltk
 %dir %{_libdir}/grass-%{gver}/etc/gui
 %{_libdir}/grass-%{gver}/etc/gui/icons
+%{_libdir}/grass-%{gver}/etc/gui/images
 %dir %{_libdir}/grass-%{gver}/etc/gui/scripts
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/gui/scripts/*
-%{_libdir}/grass-%{gver}/etc/gtcltk
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/mod*
+%{_libdir}/grass-%{gver}/etc/gui.tcl
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/i.ask
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/i.find
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/i.oif
+%{_libdir}/grass-%{gver}/etc/license
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/lister
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/lock
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/modcats
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/modcolr
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/modhead
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/modhist
+%{_libdir}/grass-%{gver}/etc/monitorcap
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/mon.*
 %dir %{_libdir}/grass-%{gver}/etc/msgs
 %lang(am) %{_libdir}/grass-%{gver}/etc/msgs/am.msg
 %lang(ar) %{_libdir}/grass-%{gver}/etc/msgs/ar.msg
@@ -248,6 +279,7 @@ rm -rf $RPM_BUILD_ROOT
 %lang(es) %{_libdir}/grass-%{gver}/etc/msgs/es.msg
 %lang(fr) %{_libdir}/grass-%{gver}/etc/msgs/fr.msg
 %lang(hi) %{_libdir}/grass-%{gver}/etc/msgs/hi.msg
+%lang(id) %{_libdir}/grass-%{gver}/etc/msgs/id.msg
 %lang(it) %{_libdir}/grass-%{gver}/etc/msgs/it.msg
 %lang(ja) %{_libdir}/grass-%{gver}/etc/msgs/ja.msg
 %lang(ko) %{_libdir}/grass-%{gver}/etc/msgs/ko.msg
@@ -264,70 +296,108 @@ rm -rf $RPM_BUILD_ROOT
 %lang(zh_CN) %{_libdir}/grass-%{gver}/etc/msgs/zh.msg
 %{_libdir}/grass-%{gver}/etc/nad
 %{_libdir}/grass-%{gver}/etc/ogr_csv
-%dir %{_libdir}/grass-%{gver}/etc/paint
-%{_libdir}/grass-%{gver}/etc/paint/patterns
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/poly_to_bmif
-%{_libdir}/grass-%{gver}/etc/paint/prolog.ps
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/prompt.sh
-#%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/water
-%{_libdir}/grass-%{gver}/etc/proj-*
-%{_libdir}/grass-%{gver}/etc/psdriver.ps
-%{_libdir}/grass-%{gver}/etc/FIPS.code
-%{_libdir}/grass-%{gver}/etc/VERSION*
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/[Iilv]*
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/echo
-%{_libdir}/grass-%{gver}/etc/el*
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/epsg_option.tcl
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/frame.*
-#%{_libdir}/grass-%{gver}/etc/freetypecap
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/g.mapsets.tcl
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/gis_set.tcl
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/grass-run.sh
-%{_libdir}/grass-%{gver}/etc/grass_intro
-%{_libdir}/grass-%{gver}/etc/gui.tcl
-#%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/help.tcl
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/mon.*
-#%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/make_location_epsg.sh
-%{_libdir}/grass-%{gver}/etc/monitorcap
-%{_libdir}/grass-%{gver}/etc/projections
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r[!g]*
+%{_libdir}/grass-%{gver}/etc/paint
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/photo.*
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/s[!t]*
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/poly_to_bmif
+%{_libdir}/grass-%{gver}/etc/proj-*.table
+%{_libdir}/grass-%{gver}/etc/projections
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/prompt.sh
+%{_libdir}/grass-%{gver}/etc/psdriver.ps
+%{_libdir}/grass-%{gver}/etc/python
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.in.wms
+%dir %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup/area_query
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup/masked_area_selection
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup/r.li.*
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup/sample_area_vector.sh
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup/square_*
+%{_libdir}/grass-%{gver}/etc/r.li.setup/*.txt
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.watershed.*
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/run
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/set_data
 %{_libdir}/grass-%{gver}/etc/state*
+%{_libdir}/grass-%{gver}/etc/symbol
+%{_libdir}/grass-%{gver}/etc/v.digit
 %{_libdir}/grass-%{gver}/etc/welcome
-%{_libdir}/grass-%{gver}/etc/wxpython
+%dir %{_libdir}/grass-%{gver}/etc/wxpython
+%{_libdir}/grass-%{gver}/etc/wxpython/README
+%{_libdir}/grass-%{gver}/etc/wxpython/compat
+%{_libdir}/grass-%{gver}/etc/wxpython/gis_set.py
+%{_libdir}/grass-%{gver}/etc/wxpython/gui_modules
+%{_libdir}/grass-%{gver}/etc/wxpython/icons
+%{_libdir}/grass-%{gver}/etc/wxpython/images
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/wxpython/scripts
+%{_libdir}/grass-%{gver}/etc/wxpython/wxgui.py
+%{_libdir}/grass-%{gver}/etc/wxpython/xml
 %{_libdir}/grass-%{gver}/fonts
 %attr(755,root,root) %{_libdir}/grass-%{gver}/scripts
-%{_mandir}/man1/*
+%dir %{_libdir}/grass-%{gver}/tools
+%attr(755,root,root) %{_libdir}/grass-%{gver}/tools/mkhtml.sh
+%{_mandir}/man1/cairodriver.1*
+%{_mandir}/man1/d.*.1*
+%{_mandir}/man1/databaseintro.1*
+%{_mandir}/man1/db.*.1*
+%{_mandir}/man1/displaydrivers.1*
+%{_mandir}/man1/g.*.1*
+%{_mandir}/man1/gis.m.1*
+%{_mandir}/man1/gm_*.1*
+%{_mandir}/man1/grass6.1*
+%{_mandir}/man1/grass-*.1*
+%{_mandir}/man1/helptext.1*
+%{_mandir}/man1/htmlmapdriver.1*
+%{_mandir}/man1/i.*.1*
+%{_mandir}/man1/imageryintro.1*
+%{_mandir}/man1/lrs.1*
+%{_mandir}/man1/m.*.1*
+%{_mandir}/man1/mkftcap.1*
+%{_mandir}/man1/modcats.1*
+%{_mandir}/man1/modcolr.1*
+%{_mandir}/man1/modhead.1*
+%{_mandir}/man1/modhist.1*
+%{_mandir}/man1/nviz.1*
+%{_mandir}/man1/nviz_cmd.1*
+%{_mandir}/man1/p.out.vrml.1*
+%{_mandir}/man1/photo.*.1*
+%{_mandir}/man1/pngdriver.1*
+%{_mandir}/man1/projectionintro.1*
+%{_mandir}/man1/psdriver.1*
+%{_mandir}/man1/ps.map.1*
+%{_mandir}/man1/r.*.1*
+%{_mandir}/man1/r3.*.1*
+%{_mandir}/man1/raster3dintro.1*
+%{_mandir}/man1/rasterintro.1*
+%{_mandir}/man1/sql.1*
+%{_mandir}/man1/v.*.1*
+%{_mandir}/man1/variables.1*
+%{_mandir}/man1/vectorintro.1*
+%{_mandir}/man1/wxGUI*.1*
+%{_mandir}/man1/xdriver.1*
+%{_mandir}/man1/xganim.1*
 
 %if %{with tcl}
 %dir %{_libdir}/grass-%{gver}/etc/dm
 %{_libdir}/grass-%{gver}/etc/dm/*.gif
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/dm/*.tcl
+%{_libdir}/grass-%{gver}/etc/dm/[!d]*.tcl
+%{_libdir}/grass-%{gver}/etc/dm/d[!.]*.tcl
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/dm/d.m.tcl
 %dir %{_libdir}/grass-%{gver}/etc/dm/script
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/dm/script/*
 %dir %{_libdir}/grass-%{gver}/etc/form
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/form/form
 %{_libdir}/grass-%{gver}/etc/form/*.tcl
 %dir %{_libdir}/grass-%{gver}/etc/gm
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/gm/*.tcl
-%{_libdir}/grass-%{gver}/etc/gm/*.gif
+%{_libdir}/grass-%{gver}/etc/gm/intro.gif
+%{_libdir}/grass-%{gver}/etc/gm/*.tcl
 %dir %{_libdir}/grass-%{gver}/etc/nviz2.2
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/nviz2.2/nviz
 %{_libdir}/grass-%{gver}/etc/nviz2.2/bitmaps
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/nviz2.2/nviz
 %dir %{_libdir}/grass-%{gver}/etc/nviz2.2/scripts
-%{_libdir}/grass-%{gver}/etc/nviz2.2/scripts/[!ns]*
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/nviz2.2/scripts/nviz2.2_script
-%{_libdir}/grass-%{gver}/etc/nviz2.2/scripts/nviz_init.tcl
-%{_libdir}/grass-%{gver}/etc/nviz2.2/scripts/nviz_params
-%{_libdir}/grass-%{gver}/etc/nviz2.2/scripts/s[!c]*
-%{_libdir}/grass-%{gver}/etc/nviz2.2/scripts/script_support.tcl
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/nviz2.2/scripts/script_[!s]*
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/nviz2.2/scripts/*
 %endif
 
 %files devel
 %defattr(644,root,root,755)
+%{_libdir}/libgrass_iostream.a
 %{_libdir}/libgrass_ismap.a
 %{_libdir}/libgrass_manage.a
-%{_libdir}/libiostream.a
-%{_includedir}/grass63
+%{_includedir}/grass64
