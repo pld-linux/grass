@@ -5,7 +5,7 @@
 %bcond_without	mysql	# disable MySQL support
 %bcond_without	odbc	# disable unixODBC support
 %bcond_without	xanim	# disable xanim module
-#
+
 Summary:	The Geographic Resources Analysis Support System
 Summary(pl.UTF-8):	System obsługujący analizę zasobów geograficznych
 Name:		grass
@@ -17,9 +17,9 @@ Group:		X11/Applications
 Source0:	http://grass.osgeo.org/grass64/source/%{name}-%{version}.tar.gz
 # Source0-md5:	ac3233aa3351f8e060ea48246aa01c7f
 Patch0:		%{name}-soname.patch
+Patch1:		ncurses.patch
 URL:		http://grass.osgeo.org/
 %{?with_tcl:BuildRequires:	OpenGL-GLU-devel}
-BuildRequires:	awk
 BuildRequires:	bison
 BuildRequires:	blas-devel
 BuildRequires:	cairo-devel
@@ -27,10 +27,10 @@ BuildRequires:	ffmpeg-devel
 BuildRequires:	fftw3-devel
 BuildRequires:	flex
 BuildRequires:	freetype-devel >= 2.0.0
-BuildRequires:	gcc-g77
+BuildRequires:	gcc-fortran
+BuildRequires:	gd-devel
 BuildRequires:	gdal-devel
 BuildRequires:	gdbm-devel
-BuildRequires:	gd-devel
 BuildRequires:	lapack-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
@@ -141,9 +141,18 @@ Pliki nagłówkowe i biblioteki statyczne systemu GRASS.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
+
+cp -f lib/external/bwidget/CHANGES.txt bwidget.CHANGES.TXT
+cp -f lib/external/bwidget/README.grass bwidget.README.grass
 
 %build
-CPPFLAGS="-I/usr/include/ncurses"; export CPPFLAGS
+%if 0
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%endif
+CPPFLAGS="-I/usr/include/ncurses"
 %configure2_13 \
 	--enable-largefile \
 	--with-includes=%{_includedir} \
@@ -189,13 +198,16 @@ mv $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/man $RPM_BUILD_ROOT%{_datadir}
 
 sed -i -e 's,^GISBASE=.*,GISBASE=%{_libdir}/grass-%{gver},' $RPM_BUILD_ROOT%{_bindir}/grass64
 
-cp -f lib/external/bwidget/CHANGES.txt bwidget.CHANGES.TXT
-cp -f lib/external/bwidget/README.grass bwidget.README.grass
-
 %{__rm} -r $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/{bwidget/{*.txt,README.grass},docs}
 
 mv -f $RPM_BUILD_ROOT%{_datadir}/locale/{pt_br,pt_BR}
 mv -f $RPM_BUILD_ROOT%{_datadir}/locale/{zh,zh_CN}
+
+rm $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/AUTHORS
+rm $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/CHANGES
+rm $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/COPYING
+rm $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/GPL.TXT
+rm $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/REQUIREMENTS.html
 
 %find_lang %{name} --all-name
 
@@ -207,7 +219,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS CHANGES COPYING README TODO bwidget.CHANGES.TXT bwidget.README.grass dist.%{_target_platform}/docs/html
+%doc AUTHORS CHANGES COPYING README TODO bwidget.CHANGES.TXT bwidget.README.grass
+#%doc dist.%{_target_platform}/docs/html
 %attr(755,root,root) %{_bindir}/gem64
 %attr(755,root,root) %{_bindir}/grass64
 %attr(755,root,root) %{_libdir}/libgrass_*.so
@@ -305,7 +318,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/grass-%{gver}/etc/psdriver.ps
 %{_libdir}/grass-%{gver}/etc/python
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.in.wms
-%dir %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup
+%dir %{_libdir}/grass-%{gver}/etc/r.li.setup
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup/area_query
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup/masked_area_selection
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup/r.li.*

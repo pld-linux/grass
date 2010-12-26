@@ -1,0 +1,64 @@
+this is ugly, really these libs should be checked in order
+also as regeneration fails, we change also configure
+
+--- grass-6.4.0/configure.in~	2010-08-15 23:34:39.000000000 +0300
++++ grass-6.4.0/configure.in	2010-12-26 22:26:02.982445841 +0200
+@@ -514,8 +514,8 @@
+ AC_SUBST(CURSES_MAXY)
+ AC_MSG_RESULT($CURSES_MAXY)
+ 
+-AC_CHECK_LIB(ncurses, initscr, CURSESLIB=-lncurses, [
+-AC_CHECK_LIB(curses, initscr, CURSESLIB=-lcurses, [
++AC_CHECK_LIB(ncursesw, initscr, CURSESLIB="-lncursesw -ltinfow", [
++AC_CHECK_LIB(ncurses, initscr, CURSESLIB="-lncurses -ltinfo", [
+     AC_MSG_ERROR([*** Unable to locate curses library.])
+     CURSESLIB=
+ ])])
+--- grass-6.4.0/configure~	2010-08-15 23:34:39.000000000 +0300
++++ grass-6.4.0/configure	2010-12-26 23:34:45.961470697 +0200
+@@ -5702,12 +5702,12 @@
+ 
+ echo "$ac_t""$CURSES_MAXY" 1>&6
+ 
+-echo $ac_n "checking for initscr in -lncurses""... $ac_c" 1>&6
+-echo "configure:5707: checking for initscr in -lncurses" >&5
++echo $ac_n "checking for initscr in -lncursesw""... $ac_c" 1>&6
++echo "configure:5707: checking for initscr in -lncursesw" >&5
+ ac_lib_var=`echo ncurses'_'initscr | sed 'y%./+-%__p_%'`
+ 
+ ac_save_LIBS="$LIBS"
+-LIBS="-lncurses  $LIBS"
++LIBS="-lncursesw  $LIBS"
+ cat > conftest.$ac_ext <<EOF
+ #line 5713 "configure"
+ #include "confdefs.h"
+@@ -5734,16 +5734,16 @@
+ 
+ if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
+   echo "$ac_t""yes" 1>&6
+-  CURSESLIB=-lncurses
++  CURSESLIB="-lncursesw -ltinfo"
+ else
+   echo "$ac_t""no" 1>&6
+ 
+-echo $ac_n "checking for initscr in -lcurses""... $ac_c" 1>&6
+-echo "configure:5743: checking for initscr in -lcurses" >&5
++echo $ac_n "checking for initscr in -lncurses""... $ac_c" 1>&6
++echo "configure:5743: checking for initscr in -lncurses" >&5
+ ac_lib_var=`echo curses'_'initscr | sed 'y%./+-%__p_%'`
+ 
+ ac_save_LIBS="$LIBS"
+-LIBS="-lcurses  $LIBS"
++LIBS="-lncurses  $LIBS"
+ cat > conftest.$ac_ext <<EOF
+ #line 5749 "configure"
+ #include "confdefs.h"
+@@ -5770,7 +5770,7 @@
+ 
+ if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
+   echo "$ac_t""yes" 1>&6
+-  CURSESLIB=-lcurses
++  CURSESLIB="-lncurses -ltinfo"
+ else
+   echo "$ac_t""no" 1>&6
+ 
