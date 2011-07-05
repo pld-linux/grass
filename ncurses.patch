@@ -14,25 +14,25 @@ also as regeneration fails, we change also configure
      AC_MSG_ERROR([*** Unable to locate curses library.])
      CURSESLIB=
  ])])
---- grass-6.4.0/configure~	2010-08-15 23:34:39.000000000 +0300
-+++ grass-6.4.0/configure	2010-12-26 23:34:45.961470697 +0200
-@@ -5702,12 +5702,12 @@
+--- grass-6.4.0/configure.orig	2011-03-10 10:54:19.000000000 +0100
++++ grass-6.4.0/configure	2011-07-05 12:50:33.000000000 +0200
+@@ -5716,12 +5716,12 @@ EOF
  
  echo "$ac_t""$CURSES_MAXY" 1>&6
  
 -echo $ac_n "checking for initscr in -lncurses""... $ac_c" 1>&6
--echo "configure:5707: checking for initscr in -lncurses" >&5
+-echo "configure:5721: checking for initscr in -lncurses" >&5
 +echo $ac_n "checking for initscr in -lncursesw""... $ac_c" 1>&6
-+echo "configure:5707: checking for initscr in -lncursesw" >&5
++echo "configure:5721: checking for initscr in -lncursesw" >&5
  ac_lib_var=`echo ncurses'_'initscr | sed 'y%./+-%__p_%'`
  
  ac_save_LIBS="$LIBS"
 -LIBS="-lncurses  $LIBS"
 +LIBS="-lncursesw  $LIBS"
  cat > conftest.$ac_ext <<EOF
- #line 5713 "configure"
+ #line 5727 "configure"
  #include "confdefs.h"
-@@ -5734,16 +5734,16 @@
+@@ -5748,16 +5748,16 @@ LIBS="$ac_save_LIBS"
  
  if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
    echo "$ac_t""yes" 1>&6
@@ -42,18 +42,19 @@ also as regeneration fails, we change also configure
    echo "$ac_t""no" 1>&6
  
 -echo $ac_n "checking for initscr in -lcurses""... $ac_c" 1>&6
--echo "configure:5743: checking for initscr in -lcurses" >&5
+-echo "configure:5757: checking for initscr in -lcurses" >&5
+-ac_lib_var=`echo curses'_'initscr | sed 'y%./+-%__p_%'`
 +echo $ac_n "checking for initscr in -lncurses""... $ac_c" 1>&6
-+echo "configure:5743: checking for initscr in -lncurses" >&5
- ac_lib_var=`echo curses'_'initscr | sed 'y%./+-%__p_%'`
++echo "configure:5757: checking for initscr in -lncurses" >&5
++ac_lib_var=`echo ncurses'_'initscr | sed 'y%./+-%__p_%'`
  
  ac_save_LIBS="$LIBS"
 -LIBS="-lcurses  $LIBS"
 +LIBS="-lncurses  $LIBS"
  cat > conftest.$ac_ext <<EOF
- #line 5749 "configure"
+ #line 5763 "configure"
  #include "confdefs.h"
-@@ -5770,7 +5770,7 @@
+@@ -5784,7 +5784,7 @@ LIBS="$ac_save_LIBS"
  
  if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
    echo "$ac_t""yes" 1>&6

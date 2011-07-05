@@ -9,13 +9,13 @@
 Summary:	The Geographic Resources Analysis Support System
 Summary(pl.UTF-8):	System obsługujący analizę zasobów geograficznych
 Name:		grass
-Version:	6.4.0
-Release:	3
+Version:	6.4.1
+Release:	1
 Epoch:		1
 License:	GPL v2+
 Group:		X11/Applications
 Source0:	http://grass.osgeo.org/grass64/source/%{name}-%{version}.tar.gz
-# Source0-md5:	ac3233aa3351f8e060ea48246aa01c7f
+# Source0-md5:	d8ca83d416b5b0cf2aa9d36c81a77b23
 Patch0:		%{name}-soname.patch
 Patch1:		ncurses.patch
 URL:		http://grass.osgeo.org/
@@ -58,7 +58,7 @@ Requires:	proj >= 4.4.6
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		gver	%{version}
-%define		_noautoreqdep   libGL.so.1 libGLU.so.1
+%define		_noautoreqdep	libGL.so.1 libGLU.so.1
 %define		_sysconfdir	/etc/X11
 %define		_target_platform %(echo %{_target_cpu}-%{_target_vendor}-%{_host_os} | sed -e 's/athlon/i686/;s/ppc/powerpc/;s/amd64/x86_64/')
 
