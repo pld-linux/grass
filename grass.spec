@@ -156,6 +156,9 @@ cp -f lib/external/bwidget/README.grass bwidget.README.grass
 %endif
 CPPFLAGS="-I/usr/include/ncurses"
 %configure2_13 \
+%if "%{_lib}" != "lib"
+        --enable-64bit \
+%endif
 	--enable-largefile \
 	--with-includes=%{_includedir} \
 	--with-libs=%{_libdir} \
