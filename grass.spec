@@ -19,6 +19,7 @@ Source0:	http://grass.osgeo.org/grass64/source/%{name}-%{version}.tar.gz
 Patch0:		%{name}-soname.patch
 Patch1:		ncurses.patch
 URL:		http://grass.osgeo.org/
+BuildRequires:	Mesa-libGLw-devel
 %{?with_tcl:BuildRequires:	OpenGL-GLU-devel}
 BuildRequires:	bison
 BuildRequires:	blas-devel
@@ -31,6 +32,7 @@ BuildRequires:	gcc-fortran
 BuildRequires:	gd-devel
 BuildRequires:	gdal-devel
 BuildRequires:	gdbm-devel
+BuildRequires:	geos-devel
 BuildRequires:	lapack-devel
 BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
