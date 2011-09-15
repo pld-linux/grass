@@ -133,6 +133,7 @@ Interfejs ODBC dla GRASSa.
 Summary:	Header files and static libraries for GRASS
 Summary(pl.UTF-8):	Pliki nagłówkowe i biblioteki statyczne systemu GRASS
 Group:		X11/Development/Libraries
+Requires:	%{name} = %{version}-%{release}
 
 %description devel
 Header files and static libraries for GRASS.
