@@ -1,3 +1,5 @@
+# TODO
+# - use system tk-BWidget instead of bundled 1.2.1 (lib/external/bwidget)
 #
 # Conditional build, see http://grass.itc.it/grass61/source/REQUIREMENTS.html
 # for description of optional requirements.
