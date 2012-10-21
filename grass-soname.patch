@@ -1,11 +1,11 @@
---- grass-6.4.0/include/Make/Shlib.make.orig	2009-03-08 09:48:33.000000000 +0100
-+++ grass-6.4.0/include/Make/Shlib.make	2010-11-03 21:42:06.003104128 +0100
+--- grass-6.4.2/include/Make/Shlib.make.orig	2012-10-20 11:25:11.634088013 +0200
++++ grass-6.4.2/include/Make/Shlib.make	2012-10-20 11:29:05.027411551 +0200
 @@ -15,7 +15,7 @@
  LDFLAGS += $(SHLIB_LDFLAGS)
  
  $(SHLIB): $(SHLIB_OBJS)
--	$(SHLIB_LD) -o $@ $(LDFLAGS) $^ $(EXTRA_LIBS) $(DLLMAIN_OBJ) && \
-+	$(SHLIB_LD) -o $@ -Wl,-soname,$(notdir $@) $(LDFLAGS) $^ $(EXTRA_LIBS) $(DLLMAIN_OBJ) && \
+-	$(SHLIB_LD) -o $@ $(LDFLAGS) $^ $(EXTRA_LIBS) $(DLLMAIN_OBJ)
++	$(SHLIB_LD) -o $@ -Wl,-soname,$(notdir $@) $(LDFLAGS) $^ $(EXTRA_LIBS) $(DLLMAIN_OBJ)
+ ifndef MINGW
  	(cd $(ARCH_LIBDIR); ln -f -s $(notdir $@) $(patsubst %.$(GRASS_VERSION_NUMBER)$(SHLIB_SUFFIX),%$(SHLIB_SUFFIX),$@))
- 
- shlib: $(SHLIB)
+ endif

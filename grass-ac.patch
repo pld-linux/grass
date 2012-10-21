@@ -1,0 +1,205 @@
+--- grass-6.4.2/lib/gis/Makefile.orig	2011-03-10 10:54:19.000000000 +0100
++++ grass-6.4.2/lib/gis/Makefile	2012-10-20 14:32:27.320283161 +0200
+@@ -12,7 +12,7 @@
+ 
+ LIB_OBJS := $(subst .c,.o,$(wildcard *.c))
+ LIB_OBJS := $(filter-out fmode.o dllmain.o,$(LIB_OBJS))
+-ifneq ($(MINGW),)
++ifeq ($(MINGW),yes)
+ LIB_OBJS := $(LIB_OBJS) dllmain.o fmode.o
+ endif
+ 
+@@ -34,7 +34,7 @@
+ 
+ ifneq ($(GDAL_DYNAMIC),)
+ EXTRA_CFLAGS += -DGDAL_DYNAMIC=1
+-ifneq ($(MINGW),)
++ifeq ($(MINGW),yes)
+ EXTRA_LIBS += -lkernel32
+ else
+ EXTRA_LIBS += $(DLLIB)
+--- grass-6.4.2/lib/init/Makefile.orig	2011-06-08 12:30:46.000000000 +0200
++++ grass-6.4.2/lib/init/Makefile	2012-10-20 14:33:08.316948107 +0200
+@@ -60,7 +60,7 @@
+ 		$(ETC)/html_browser_mac.sh
+ endif
+ 
+-ifneq ($(strip $(MINGW)),)
++ifeq ($(strip $(MINGW)),yes)
+ 	FILES += \
+ 		$(ETC)/Init.bat \
+ 		$(ETC)/winlocale$(EXE) \
+--- grass-6.4.2/Makefile.orig	2011-05-13 21:01:14.000000000 +0200
++++ grass-6.4.2/Makefile	2012-10-20 14:34:32.893611225 +0200
+@@ -49,7 +49,7 @@
+ 	man \
+ 	macosx
+ 
+-ifeq ($(strip $(MINGW)),)
++ifneq ($(strip $(MINGW)),yes)
+ 	SUBDIRS += gem
+ endif
+ 
+@@ -115,7 +115,7 @@
+ 	@if [ `cat "$(ERRORLOG)" | wc -l` -gt 8 ] ; then false ; else true ; fi
+ 
+ manifests:
+-ifneq ($(strip $(MINGW)),)
++ifeq ($(strip $(MINGW)),yes)
+ 	find $(ARCH_DISTDIR) -type f -name '*.exe' | \
+ 	while read file ; do \
+ 	    cmd=`basename "$$file" .exe` ; \
+@@ -278,7 +278,7 @@
+ 	-cd ${GISBASE} ; tar cBf - driver | (cd ${INST_DIR} ; tar xBf - ) 2>/dev/null
+ 	-cd ${GISBASE} ; tar cBf - etc | (cd ${INST_DIR} ; tar xBf - ) 2>/dev/null
+ 	-cd ${GISBASE} ; tar cBf - fonts | (cd ${INST_DIR} ; tar xBf - ) 2>/dev/null
+-ifeq ($(strip $(MINGW)),)
++ifneq ($(strip $(MINGW)),yes)
+ 	-cd ${GISBASE} ; tar cBf - man | (cd ${INST_DIR} ; tar xBf - ) 2>/dev/null
+ endif
+ 	-cd ${GISBASE} ; tar cBf - scripts | (cd ${INST_DIR} ; tar xBf - ) 2>/dev/null
+@@ -299,7 +299,7 @@
+ 	-sed 's#'${GISBASE}'#'${INST_DIR}'#g' ${GISBASE}/etc/fontcap > ${INST_DIR}/etc/fontcap
+ 	@##### -chmod -R 1777 ${INST_DIR}/locks 2>/dev/null
+ 	-chmod -R a+rX ${INST_DIR} 2>/dev/null
+-ifeq ($(strip $(MINGW)),)
++ifneq ($(strip $(MINGW)),yes)
+ 	@#GEM installation
+ 	-tar cBf - gem/skeleton | (cd ${INST_DIR}/etc ; tar xBf - ) 2>/dev/null
+ 	-${INSTALL} gem/gem$(GRASS_VERSION_MAJOR)$(GRASS_VERSION_MINOR) ${BINDIR} 2>/dev/null
+--- grass-6.4.2/lib/python/ctypes/Makefile.orig	2011-05-03 21:27:16.000000000 +0200
++++ grass-6.4.2/lib/python/ctypes/Makefile	2012-10-20 14:35:23.370275773 +0200
+@@ -57,7 +57,7 @@
+ CTYPESFLAGS = --cpp "$(CC) -E $(CPPFLAGS) $(LFS_CFLAGS) $(EXTRA_CFLAGS) $(NLS_CFLAGS) $(DEFS) $(EXTRA_INC) $(INC)"
+ EXTRA_CLEAN_FILES := $(foreach M,$(MODULES),$(M).py) $(wildcard ctypesgencore/*.pyc) $(wildcard ctypesgencore/*/*.pyc)
+ 
+-ifneq ($(MINGW),)
++ifeq ($(MINGW),yes)
+ INTLLIB = -lintl3
+ endif
+ 
+--- grass-6.4.2/visualization/nviz/Makefile.orig	2008-12-23 15:05:57.000000000 +0100
++++ grass-6.4.2/visualization/nviz/Makefile	2012-10-20 14:36:21.746939990 +0200
+@@ -9,7 +9,7 @@
+ PROG=nviz
+ INSTALL_DIR=$(GISBASE)/etc/$(NV_VER)
+ 
+-ifneq ($(strip $(MINGW)),)
++ifeq ($(strip $(MINGW)),yes)
+ 	FIND = find
+ else
+ 	FIND = find -L
+@@ -36,7 +36,7 @@
+ 	-$(MKDIR) $(INSTALL_DIR)
+ 	$(INSTALL) src/nvwish$(EXE) $(INSTALL_DIR)/$(PROG)$(EXE)
+ 	$(INSTALL) scripts/$(PROG) $(GISBASE)/bin
+-ifneq ($(strip $(MINGW)),)
++ifeq ($(strip $(MINGW)),yes)
+ 	$(INSTALL) scripts/nviz.bat $(GISBASE)/bin
+ endif
+ 	-$(MKDIR) $(INSTALL_DIR)/scripts
+--- grass-6.4.2/visualization/nviz/html/Makefile.orig	2008-12-23 15:05:57.000000000 +0100
++++ grass-6.4.2/visualization/nviz/html/Makefile	2012-10-20 14:36:43.426939080 +0200
+@@ -5,7 +5,7 @@
+ 
+ GRASS_NVIZ_DOCS=$(GISBASE)/docs/html/nviz
+ 
+-ifneq ($(strip $(MINGW)),)
++ifeq ($(strip $(MINGW)),yes)
+ 	FIND = find
+ else
+ 	FIND = find -L
+--- grass-6.4.2/gui/tcltk/Makefile.orig	2009-05-11 21:22:34.000000000 +0200
++++ grass-6.4.2/gui/tcltk/Makefile	2012-10-20 14:39:10.970266222 +0200
+@@ -2,7 +2,7 @@
+ 
+ SUBDIRS = gis.m
+ 
+-ifndef MINGW
++ifneq ($(MINGW),yes)
+ SUBDIRS += d.m
+ endif
+ 
+--- grass-6.4.2/gui/scripts/Makefile.orig	2010-01-15 15:41:17.000000000 +0100
++++ grass-6.4.2/gui/scripts/Makefile	2012-10-20 14:39:41.100264957 +0200
+@@ -2,7 +2,7 @@
+ 
+ include $(MODULE_TOPDIR)/include/Make/Dir.make
+ 
+-ifdef MINGW
++ifeq ($(MINGW),yes)
+ SCRIPT_ACTIONS += create.bat
+ endif
+ 
+--- grass-6.4.2/raster/Makefile.orig	2011-04-22 16:09:26.000000000 +0200
++++ grass-6.4.2/raster/Makefile	2012-10-20 14:40:31.790262831 +0200
+@@ -129,7 +129,7 @@
+ 
+ include $(MODULE_TOPDIR)/include/Make/Platform.make
+ 
+-ifndef MINGW
++ifneq ($(MINGW),yes)
+     SUBDIRS += r.li
+ endif
+ 
+--- grass-6.4.2/vector/v.transform/Makefile.orig	2008-12-19 21:28:57.000000000 +0100
++++ grass-6.4.2/vector/v.transform/Makefile	2012-10-20 14:40:59.673594995 +0200
+@@ -5,7 +5,7 @@
+ 
+ include $(MODULE_TOPDIR)/include/Make/Module.make
+ 
+-ifdef MINGW
++ifeq ($(MINGW),yes)
+ EXTRA_LIB=
+ else
+ EXTRA_LIB=$(VASKLIB) $(CURSES)
+--- grass-6.4.2/include/Make/Grass.make.in.orig	2011-04-18 20:13:38.000000000 +0200
++++ grass-6.4.2/include/Make/Grass.make.in	2012-10-20 14:58:30.123550911 +0200
+@@ -86,7 +86,7 @@
+ VECT_CFLAGS =  $(GDALCFLAGS) $(GEOSCFLAGS)
+ 
+ # Object with _fmode which must be linked to each executable on Windows
+-ifdef MINGW
++ifeq ($(MINGW),yes)
+   FMODE_OBJ = $(MODULE_TOPDIR)/lib/gis/$(OBJDIR)/fmode.o
+ endif
+ 
+--- grass-6.4.2/include/Make/Shlib.make.orig	2012-10-20 14:41:45.603593065 +0200
++++ grass-6.4.2/include/Make/Shlib.make	2012-10-20 14:59:13.833549075 +0200
+@@ -3,7 +3,7 @@
+ SHLIB = $(ARCH_LIBDIR)/$(SHLIB_PREFIX)$(SHLIB_NAME)$(SHLIB_SUFFIX)
+ 
+ # Object that calls _setfmode(_O_BINARY) which must be linked to each DLL on Windows
+-ifdef MINGW
++ifeq ($(MINGW),yes)
+ ifneq ($(SHLIB_NAME),$(DATETIME_LIBNAME))
+ ifneq ($(SHLIB_NAME),$(GIS_LIBNAME))
+   DLLMAIN_OBJ = $(MODULE_TOPDIR)/lib/gis/$(OBJDIR)/dllmain.o
+@@ -16,7 +16,7 @@
+ 
+ $(SHLIB): $(SHLIB_OBJS)
+ 	$(SHLIB_LD) -o $@ -Wl,-soname,$(notdir $@) $(LDFLAGS) $^ $(EXTRA_LIBS) $(DLLMAIN_OBJ)
+-ifndef MINGW
++ifneq ($(MINGW),yes)
+ 	(cd $(ARCH_LIBDIR); ln -f -s $(notdir $@) $(patsubst %.$(GRASS_VERSION_NUMBER)$(SHLIB_SUFFIX),%$(SHLIB_SUFFIX),$@))
+ endif
+ 
+--- grass-6.4.2/include/Make/Script.make.orig	2009-07-05 14:48:37.000000000 +0200
++++ grass-6.4.2/include/Make/Script.make	2012-10-20 14:59:58.503547201 +0200
+@@ -11,7 +11,7 @@
+ include $(MODULE_TOPDIR)/include/Make/Rules.make
+ 
+ SCRIPT_ACTIONS = $(SCRIPT)
+-ifdef MINGW
++ifeq ($(MINGW),yes)
+ SCRIPT_ACTIONS += $(BIN)/$(PGM).bat
+ endif
+ 
+--- grass-6.4.2/general/g.version/Makefile.orig	2011-04-18 20:13:39.000000000 +0200
++++ grass-6.4.2/general/g.version/Makefile	2012-10-21 08:48:28.460856763 +0200
+@@ -29,4 +29,4 @@
+ 	sed -e 's/^\(.*\)$$/"\1\\n"/' $< > $@
+ 
+ $(OBJDIR)/confparms.h: $(MODULE_TOPDIR)/config.status
+-	sed -n '7s/^#\(.*\)$$/"\1"/p' $< > $@
++	sed -n '7s/^#\(.*\)$$/"\1"/p;s/^ac_cs_config="\(.*"\)$$/".\/configure \1/p' $< > $@
