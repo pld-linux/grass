@@ -195,6 +195,17 @@
  SCRIPT_ACTIONS += $(BIN)/$(PGM).bat
  endif
  
+--- grass-6.4.3/include/Make/Rules.make.orig	2013-03-02 11:52:07.000000000 +0100
++++ grass-6.4.3/include/Make/Rules.make	2014-06-11 21:22:16.080021691 +0200
+@@ -66,7 +66,7 @@
+ %.tab.h %.tab.c: %.y
+ 	$(YACC) -b$* -p$* $(YACCFLAGS) $<
+ 
+-ifneq ($(MINGW),)
++ifeq ($(MINGW),yes)
+ mkpath = $(shell $(TOOLSDIR)/g.echo$(EXE) $(1));$(2)
+ else
+ mkpath = $(1):$(2)
 --- grass-6.4.2/general/g.version/Makefile.orig	2011-04-18 20:13:39.000000000 +0200
 +++ grass-6.4.2/general/g.version/Makefile	2012-10-21 08:48:28.460856763 +0200
 @@ -29,4 +29,4 @@

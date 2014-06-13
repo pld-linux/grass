@@ -1,37 +1,41 @@
 # TODO
 # - use system tk-BWidget instead of bundled 1.2.1 (lib/external/bwidget)
+# - openDWG
 #
 # Conditional build, see http://grass.itc.it/grass61/source/REQUIREMENTS.html
 # for description of optional requirements.
-%bcond_without	tcl	# disable gui and nviz
-%bcond_without	mysql	# disable MySQL support
-%bcond_without	odbc	# disable unixODBC support
-%bcond_without	xanim	# disable xanim module
+%bcond_without	tcl	# GUI and nviz
+%bcond_without	mysql	# MySQL support
+%bcond_without	odbc	# unixODBC support
+%bcond_without	glw	# GLw interface
+%bcond_without	xanim	# xanim module
 
 Summary:	The Geographic Resources Analysis Support System
 Summary(pl.UTF-8):	System obsługujący analizę zasobów geograficznych
 Name:		grass
-Version:	6.4.2
+Version:	6.4.3
 Release:	1
 Epoch:		1
 License:	GPL v2+
 Group:		X11/Applications
 Source0:	http://grass.osgeo.org/grass64/source/%{name}-%{version}.tar.gz
-# Source0-md5:	d3398d6b1e3a2ef19cfb6e39a5ae9919
+# Source0-md5:	d82d11b96e1ca1e23078b7657293bf22
 Patch0:		%{name}-soname.patch
 Patch1:		ncurses.patch
 Patch2:		%{name}-ffmpeg.patch
 Patch3:		%{name}-ac.patch
+Patch4:		%{name}-format.patch
 URL:		http://grass.osgeo.org/
 %{?with_tcl:BuildRequires:	OpenGL-GLU-devel}
-BuildRequires:	OpenGL-GLw-devel
+%{?with_glw:BuildRequires:	OpenGL-GLw-devel}
 BuildRequires:	autoconf >= 2.13
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	blas-devel
 BuildRequires:	cairo-devel
+# libavcodec libavformat libavutil libswscale
 BuildRequires:	ffmpeg-devel
-BuildRequires:	fftw3-devel
+BuildRequires:	fftw3-devel >= 3
 BuildRequires:	flex
 BuildRequires:	freetype-devel >= 2.0.0
 BuildRequires:	gcc-fortran
@@ -44,22 +48,28 @@ BuildRequires:	libjpeg-devel
 BuildRequires:	libpng-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtiff-devel
-BuildRequires:	man
+# man or man-db
+BuildRequires:	/usr/bin/man
 %{?with_xanim:BuildRequires:	motif-devel}
 %{?with_mysql:BuildRequires:	mysql-devel}
 BuildRequires:	ncurses-devel
+BuildRequires:	pkgconfig
 BuildRequires:	postgresql-backend-devel
 BuildRequires:	postgresql-devel
 BuildRequires:	proj-devel >= 4.4.6
 BuildRequires:	proj-progs
 BuildRequires:	python-devel >= 1:2.3
+BuildRequires:	python-wxPython
 BuildRequires:	readline-devel
 BuildRequires:	sed >= 4.0
 BuildRequires:	sqlite3-devel >= 3.0
 %{?with_tcl:BuildRequires:	tcl-devel >= 8.4}
 %{?with_tcl:BuildRequires:	tk-devel >= 8.4}
 %{?with_odbc:BuildRequires:	unixODBC-devel}
-BuildRequires:	wxGTK2-unicode-devel
+BuildRequires:	wxGTK2-unicode-devel >= 2.8.1
+BuildRequires:	xorg-lib-libX11-devel
+BuildRequires:	xorg-lib-libXext-devel
+BuildRequires:	xorg-lib-libXt-devel
 BuildRequires:	zlib-devel
 # R language?
 Requires:	proj >= 4.4.6
@@ -153,6 +163,7 @@ Pliki nagłówkowe i biblioteki statyczne systemu GRASS.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 cp -f lib/external/bwidget/CHANGES.txt bwidget.CHANGES.TXT
 cp -f lib/external/bwidget/README.grass bwidget.README.grass
@@ -176,6 +187,8 @@ CPPFLAGS="-I/usr/include/ncurses"
 	--with-ffmpeg-includes='/usr/include/libavcodec /usr/include/libavformat /usr/include/libswscale' \
 	--with-freetype \
 	--with-freetype-includes=/usr/include/freetype2 \
+	--with-geos=/usr/bin/geos-config \
+	%{?with_glw:--with-glw} \
 	--with-lapack \
 	%{?with_xanim:--with-motif} \
 	%{?with_mysql:--with-mysql} \
@@ -191,7 +204,7 @@ CPPFLAGS="-I/usr/include/ncurses"
 	--with-sqlite \
 	--with%{!?with_tcl:out}-tcltk \
 	--with-wxwidgets=/usr/bin/wx-gtk2-unicode-config
-# --with-glw requires Motif parts in -lGLw or -lGLwM
+
 %{__make}
 
 %install
@@ -312,6 +325,7 @@ rm -rf $RPM_BUILD_ROOT
 %lang(ko) %{_libdir}/grass-%{gver}/etc/msgs/ko.msg
 %lang(lv) %{_libdir}/grass-%{gver}/etc/msgs/lv.msg
 %lang(mr) %{_libdir}/grass-%{gver}/etc/msgs/mr.msg
+%lang(nl) %{_libdir}/grass-%{gver}/etc/msgs/nl.msg
 %lang(pl) %{_libdir}/grass-%{gver}/etc/msgs/pl.msg
 %lang(pt) %{_libdir}/grass-%{gver}/etc/msgs/pt.msg
 %lang(pt_BR) %{_libdir}/grass-%{gver}/etc/msgs/pt_br.msg
@@ -348,18 +362,30 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/grass-%{gver}/etc/wxpython
 %{_libdir}/grass-%{gver}/etc/wxpython/README
 %{_libdir}/grass-%{gver}/etc/wxpython/compat
-%{_libdir}/grass-%{gver}/etc/wxpython/gis_set.py*
-%{_libdir}/grass-%{gver}/etc/wxpython/gui_modules
+%{_libdir}/grass-%{gver}/etc/wxpython/core
+%{_libdir}/grass-%{gver}/etc/wxpython/dbmgr
+%{_libdir}/grass-%{gver}/etc/wxpython/gcp
+%{_libdir}/grass-%{gver}/etc/wxpython/gmodeler
+%{_libdir}/grass-%{gver}/etc/wxpython/gui_core
 %{_libdir}/grass-%{gver}/etc/wxpython/icons
+%{_libdir}/grass-%{gver}/etc/wxpython/lmgr
+%{_libdir}/grass-%{gver}/etc/wxpython/location_wizard
+%{_libdir}/grass-%{gver}/etc/wxpython/mapdisp
+%{_libdir}/grass-%{gver}/etc/wxpython/modules
+%{_libdir}/grass-%{gver}/etc/wxpython/nviz
+%{_libdir}/grass-%{gver}/etc/wxpython/psmap
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/wxpython/scripts
-%{_libdir}/grass-%{gver}/etc/wxpython/wxgui.py*
+%{_libdir}/grass-%{gver}/etc/wxpython/vdigit
+%{_libdir}/grass-%{gver}/etc/wxpython/wxplot
 %{_libdir}/grass-%{gver}/etc/wxpython/xml
+%{_libdir}/grass-%{gver}/etc/wxpython/gis_set.py*
+%{_libdir}/grass-%{gver}/etc/wxpython/wxgui.py*
 %{_libdir}/grass-%{gver}/fonts
 %attr(755,root,root) %{_libdir}/grass-%{gver}/scripts
 %dir %{_libdir}/grass-%{gver}/tools
+%attr(755,root,root) %{_libdir}/grass-%{gver}/tools/g.echo
+%attr(755,root,root) %{_libdir}/grass-%{gver}/tools/g.html2man
 %attr(755,root,root) %{_libdir}/grass-%{gver}/tools/mkhtml.sh
-%dir %{_libdir}/grass-%{gver}/tools/g.html2man
-%attr(755,root,root) %{_libdir}/grass-%{gver}/tools/g.html2man/g.html2man
 %{_mandir}/man1/cairodriver.1*
 %{_mandir}/man1/d.*.1*
 %{_mandir}/man1/databaseintro.1*
@@ -418,9 +444,11 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/nviz2.2/nviz
 %dir %{_libdir}/grass-%{gver}/etc/nviz2.2/msgs
 %lang(de) %{_libdir}/grass-%{gver}/etc/nviz2.2/msgs/de.msg
+%lang(fr) %{_libdir}/grass-%{gver}/etc/nviz2.2/msgs/fr.msg
 %lang(it) %{_libdir}/grass-%{gver}/etc/nviz2.2/msgs/it.msg
 %lang(ja) %{_libdir}/grass-%{gver}/etc/nviz2.2/msgs/ja.msg
 %lang(lv) %{_libdir}/grass-%{gver}/etc/nviz2.2/msgs/lv.msg
+%lang(nl) %{_libdir}/grass-%{gver}/etc/nviz2.2/msgs/nl.msg
 %lang(pl) %{_libdir}/grass-%{gver}/etc/nviz2.2/msgs/pl.msg
 %dir %{_libdir}/grass-%{gver}/etc/nviz2.2/scripts
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/nviz2.2/scripts/*

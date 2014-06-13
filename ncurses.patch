@@ -14,25 +14,25 @@ also as regeneration fails, we change also configure
      AC_MSG_ERROR([*** Unable to locate curses library.])
      CURSESLIB=
  ])])
---- grass-6.4.2/configure.orig	2012-02-06 11:16:07.000000000 +0100
-+++ grass-6.4.2/configure	2012-10-20 12:49:39.603875329 +0200
-@@ -5758,12 +5758,12 @@
+--- grass-6.4.3/configure.orig	2013-07-27 20:44:57.000000000 +0200
++++ grass-6.4.3/configure	2014-05-18 18:30:25.673456894 +0200
+@@ -5718,12 +5718,12 @@
  
  echo "$ac_t""$CURSES_MAXY" 1>&6
  
 -echo $ac_n "checking for initscr in -lncurses""... $ac_c" 1>&6
--echo "configure:5763: checking for initscr in -lncurses" >&5
+-echo "configure:5723: checking for initscr in -lncurses" >&5
 +echo $ac_n "checking for initscr in -lncursesw""... $ac_c" 1>&6
-+echo "configure:5763: checking for initscr in -lncursesw" >&5
++echo "configure:5723: checking for initscr in -lncursesw" >&5
  ac_lib_var=`echo ncurses'_'initscr | sed 'y%./+-%__p_%'`
  
  ac_save_LIBS="$LIBS"
 -LIBS="-lncurses  $LIBS"
 +LIBS="-lncursesw  $LIBS"
  cat > conftest.$ac_ext <<EOF
- #line 5769 "configure"
+ #line 5729 "configure"
  #include "confdefs.h"
-@@ -5790,7 +5790,7 @@
+@@ -5750,7 +5750,7 @@
  
  if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
    echo "$ac_t""yes" 1>&6
@@ -41,7 +41,7 @@ also as regeneration fails, we change also configure
  else
    echo "$ac_t""no" 1>&6
  
-@@ -5826,7 +5826,7 @@
+@@ -5786,7 +5786,7 @@
  
  if eval "test \"`echo '$ac_cv_lib_'$ac_lib_var`\" = yes"; then
    echo "$ac_t""yes" 1>&6
