@@ -347,6 +347,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.in.wms
 %dir %{_libdir}/grass-%{gver}/etc/r.li.setup
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup/area_query
+%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup/masked_area_selection.sh
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup/r.li.*
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup/sample_area_vector.sh
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup/square_*
@@ -449,6 +450,7 @@ rm -rf $RPM_BUILD_ROOT
 %lang(lv) %{_libdir}/grass-%{gver}/etc/nviz2.2/msgs/lv.msg
 %lang(nl) %{_libdir}/grass-%{gver}/etc/nviz2.2/msgs/nl.msg
 %lang(pl) %{_libdir}/grass-%{gver}/etc/nviz2.2/msgs/pl.msg
+%lang(ro) %{_libdir}/grass-%{gver}/etc/nviz2.2/msgs/ro.msg
 %dir %{_libdir}/grass-%{gver}/etc/nviz2.2/scripts
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/nviz2.2/scripts/*
 %endif
