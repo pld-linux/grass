@@ -13,13 +13,13 @@
 Summary:	The Geographic Resources Analysis Support System
 Summary(pl.UTF-8):	System obsługujący analizę zasobów geograficznych
 Name:		grass
-Version:	6.4.3
+Version:	6.4.4
 Release:	1
 Epoch:		1
 License:	GPL v2+
 Group:		X11/Applications
 Source0:	http://grass.osgeo.org/grass64/source/%{name}-%{version}.tar.gz
-# Source0-md5:	d82d11b96e1ca1e23078b7657293bf22
+# Source0-md5:	4b3e0caaeb1567e15c78b523e3674170
 Patch0:		%{name}-soname.patch
 Patch1:		ncurses.patch
 Patch2:		%{name}-ffmpeg.patch
