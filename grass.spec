@@ -347,7 +347,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.in.wms
 %dir %{_libdir}/grass-%{gver}/etc/r.li.setup
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup/area_query
-%attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup/masked_area_selection
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup/r.li.*
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup/sample_area_vector.sh
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/r.li.setup/square_*
