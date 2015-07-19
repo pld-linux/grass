@@ -214,3 +214,16 @@
  $(OBJDIR)/confparms.h: $(MODULE_TOPDIR)/config.status
 -	sed -n '7s/^#\(.*\)$$/"\1"/p' $< > $@
 +	sed -n '7s/^#\(.*\)$$/"\1"/p;s/^ac_cs_config="\(.*"\)$$/".\/configure \1/p' $< > $@
+--- grass-6.4.4/configure.in~	2015-07-19 06:50:37.000000000 +0000
++++ grass-6.4.4/configure.in	2015-07-19 06:51:21.133489471 +0000
+@@ -101,10 +101,6 @@
+ 
+ AC_SUBST(ARCH)
+ 
+-# Use absolute path for aux directory so that install-sh works
+-
+-AC_CONFIG_AUX_DIR($SRCDIR)
+-
+ # Set GISBASE and GRASS_BIN
+ 
+ GISBASE="${WINDSTDIR}/dist.${ARCH}"

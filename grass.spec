@@ -14,7 +14,7 @@ Summary:	The Geographic Resources Analysis Support System
 Summary(pl.UTF-8):	System obsługujący analizę zasobów geograficznych
 Name:		grass
 Version:	6.4.4
-Release:	2
+Release:	3
 Epoch:		1
 License:	GPL v2+
 Group:		X11/Applications
@@ -78,7 +78,6 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		gver	%{version}
 %define		_noautoreqdep	libGL.so.1 libGLU.so.1
 %define		_sysconfdir	/etc/X11
-%define		_target_platform %(echo %{_target_cpu}-%{_target_vendor}-%{_host_os} | sed -e 's/athlon/i686/;s/ppc/powerpc/;s/amd64/x86_64/')
 
 %description
 GRASS (the Geographic Resources Analysis Support System) is a software
