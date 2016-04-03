@@ -217,17 +217,17 @@ rm -rf $RPM_BUILD_ROOT
 	PREFIX=$RPM_BUILD_ROOT%{_libdir}
 
 install -d $RPM_BUILD_ROOT{%{_datadir},%{_includedir}/grass64}
-mv $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/include/* $RPM_BUILD_ROOT%{_includedir}/grass64
-mv $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/lib/* $RPM_BUILD_ROOT%{_libdir}
-mv $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/locale $RPM_BUILD_ROOT%{_datadir}
-mv $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/man $RPM_BUILD_ROOT%{_datadir}
+%{__mv} $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/include/* $RPM_BUILD_ROOT%{_includedir}/grass64
+%{__mv} $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/lib/* $RPM_BUILD_ROOT%{_libdir}
+%{__mv} $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/locale $RPM_BUILD_ROOT%{_datadir}
+%{__mv} $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/man $RPM_BUILD_ROOT%{_datadir}
 
 sed -i -e 's,^GISBASE=.*,GISBASE=%{_libdir}/grass-%{gver},' $RPM_BUILD_ROOT%{_bindir}/grass64
 
 %{__rm} -r $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/{bwidget/{*.txt,README.grass},docs}
 
-mv -f $RPM_BUILD_ROOT%{_datadir}/locale/{pt_br,pt_BR}
-mv -f $RPM_BUILD_ROOT%{_datadir}/locale/{zh,zh_CN}
+%{__mv} $RPM_BUILD_ROOT%{_datadir}/locale/{pt_br,pt_BR}
+%{__mv} $RPM_BUILD_ROOT%{_datadir}/locale/{zh,zh_CN}
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/AUTHORS
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/CHANGES
