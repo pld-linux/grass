@@ -13,18 +13,19 @@
 Summary:	The Geographic Resources Analysis Support System
 Summary(pl.UTF-8):	System obsługujący analizę zasobów geograficznych
 Name:		grass
-Version:	6.4.4
-Release:	4
+Version:	6.4.5
+Release:	1
 Epoch:		1
 License:	GPL v2+
 Group:		X11/Applications
 Source0:	http://grass.osgeo.org/grass64/source/%{name}-%{version}.tar.gz
-# Source0-md5:	4b3e0caaeb1567e15c78b523e3674170
+# Source0-md5:	c58ab8db635ebd06cfd93dce7b70b6cb
 Patch0:		%{name}-soname.patch
 Patch1:		ncurses.patch
 Patch2:		%{name}-ffmpeg.patch
 Patch3:		%{name}-ac.patch
 Patch4:		%{name}-format.patch
+Patch5:		%{name}-ctypesgen.patch
 URL:		http://grass.osgeo.org/
 %{?with_tcl:BuildRequires:	OpenGL-GLU-devel}
 %{?with_glw:BuildRequires:	OpenGL-GLw-devel}
@@ -163,6 +164,7 @@ Pliki nagłówkowe i biblioteki statyczne systemu GRASS.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 cp -f lib/external/bwidget/CHANGES.txt bwidget.CHANGES.TXT
 cp -f lib/external/bwidget/README.grass bwidget.README.grass

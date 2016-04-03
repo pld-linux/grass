@@ -1,0 +1,11 @@
+--- grass-6.4.5/lib/python/ctypes/ctypesgencore/parser/cgrammar.py.orig	2016-04-02 20:36:44.203067400 +0200
++++ grass-6.4.5/lib/python/ctypes/ctypesgencore/parser/cgrammar.py	2016-04-02 09:42:23.508048350 +0200
+@@ -1080,7 +1080,7 @@
+         p[0] = p[1]
+ 
+ def p_error(t):
+-    if t.lexer.in_define:
++    if t.lexer.in_define or t.type == 'PP_END_DEFINE':
+         # p_define_error will generate an error message.
+         pass
+     else:

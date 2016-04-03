@@ -131,17 +131,6 @@
  SCRIPT_ACTIONS += create.bat
  endif
  
---- grass-6.4.2/raster/Makefile.orig	2011-04-22 16:09:26.000000000 +0200
-+++ grass-6.4.2/raster/Makefile	2012-10-20 14:40:31.790262831 +0200
-@@ -129,7 +129,7 @@
- 
- include $(MODULE_TOPDIR)/include/Make/Platform.make
- 
--ifndef MINGW
-+ifneq ($(MINGW),yes)
-     SUBDIRS += r.li
- endif
- 
 --- grass-6.4.2/vector/v.transform/Makefile.orig	2008-12-19 21:28:57.000000000 +0100
 +++ grass-6.4.2/vector/v.transform/Makefile	2012-10-20 14:40:59.673594995 +0200
 @@ -5,7 +5,7 @@
