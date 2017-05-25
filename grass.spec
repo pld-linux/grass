@@ -9,16 +9,15 @@
 Summary:	The Geographic Resources Analysis Support System
 Summary(pl.UTF-8):	System obsługujący analizę zasobów geograficznych
 Name:		grass
-Version:	7.0.3
-Release:	3
+Version:	7.2.1
+Release:	1
 Epoch:		1
 License:	GPL v2+
 Group:		X11/Applications
-Source0:	http://grass.osgeo.org/grass70/source/%{name}-%{version}.tar.gz
-# Source0-md5:	dfbd39829036ee2d59b13c35a183ec0e
+Source0:	http://grass.osgeo.org/grass72/source/%{name}-%{version}.tar.gz
+# Source0-md5:	5c858c718d40a4f3e82741e60c9f7b97
 Patch0:		%{name}-soname.patch
 Patch1:		%{name}-ac.patch
-Patch2:		%{name}-format.patch
 Patch3:		%{name}-ctypesgen.patch
 URL:		http://grass.osgeo.org/
 BuildRequires:	OpenGL-GLU-devel
@@ -148,7 +147,6 @@ Pliki nagłówkowe i biblioteki statyczne systemu GRASS.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 %patch3 -p1
 
 %{__sed} -i -e '1s,/usr/bin/env perl,%{__perl},' \
@@ -198,8 +196,8 @@ rm -rf $RPM_BUILD_ROOT
 	BINDIR=$RPM_BUILD_ROOT%{_bindir} \
 	PREFIX=$RPM_BUILD_ROOT%{_libdir}
 
-install -d $RPM_BUILD_ROOT{%{_datadir},%{_includedir}/grass70}
-%{__mv} $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/include/* $RPM_BUILD_ROOT%{_includedir}/grass70
+install -d $RPM_BUILD_ROOT{%{_datadir},%{_includedir}/grass72}
+%{__mv} $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/include/* $RPM_BUILD_ROOT%{_includedir}/grass72
 %{__mv} $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/lib/* $RPM_BUILD_ROOT%{_libdir}
 %{__mv} $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/locale $RPM_BUILD_ROOT%{_datadir}
 %{__mv} $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/docs/man $RPM_BUILD_ROOT%{_datadir}
@@ -207,7 +205,7 @@ install -d $RPM_BUILD_ROOT{%{_datadir},%{_includedir}/grass70}
 
 # these manual cover topics, not programs, so shouldn't exist in section 1
 # (maybe in section 7, but names are too common anyway); keep HTML version only
-%{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/{cairodriver,database,databaseintro,display,displaydrivers,full_index,general,helptext,htmldriver,imagery,imageryintro,index,keywords,misc,pngdriver,postscript,projectionintro,psdriver,raster,rasterintro,raster3d,raster3dintro,sql,temporal,temporalintro,topics,variables,vector,vectorascii,vectorintro}.1
+%{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/{cairodriver,database,databaseintro,display,displaydrivers,full_index,general,helptext,htmldriver,imagery,imageryintro,index,keywords,pngdriver,postscript,projectionintro,psdriver,raster,rasterintro,raster3d,raster3dintro,sql,temporal,temporalintro,topics,variables,vector,vectorascii,vectorintro}.1
 
 %{__rm} -r $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/docs
 
@@ -231,7 +229,7 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS CHANGES COPYING README TODO
-#%attr(755,root,root) %{_bindir}/grass70
+#%attr(755,root,root) %{_bindir}/grass72
 %attr(755,root,root) %{_libdir}/libgrass_*.%{version}.so
 %dir %{_libdir}/grass-%{gver}
 %dir %{_libdir}/grass-%{gver}/*.csv
@@ -249,7 +247,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/echo
 %{_libdir}/grass-%{gver}/etc/element_list
 %{_libdir}/grass-%{gver}/etc/fontcap
-%{_libdir}/grass-%{gver}/etc/grass70.py
+%{_libdir}/grass-%{gver}/etc/grass72.py
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/i.find
 %{_libdir}/grass-%{gver}/etc/license
 %attr(755,root,root) %{_libdir}/grass-%{gver}/etc/lister
@@ -315,8 +313,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/grass-%{gver}/demolocation
 %{_datadir}/appdata/grass.appdata.xml
 %{_desktopdir}/grass.desktop
-%{_iconsdir}/hicolor/*x*/apps/grass70.png
-%{_iconsdir}/hicolor/scalable/apps/grass70.svg
+%{_iconsdir}/hicolor/*x*/apps/grass.png
+%{_iconsdir}/hicolor/scalable/apps/grass.svg
 %{_mandir}/man1/d.*.1*
 %{_mandir}/man1/db.*.1*
 %{_mandir}/man1/g.*.1*
@@ -331,19 +329,15 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/t.*.1*
 %{_mandir}/man1/topic_*.1*
 %{_mandir}/man1/v.*.1*
-%{_mandir}/man1/wximgview.1*
 %{_mandir}/man1/wxpyimgview.1*
 %{_mandir}/man1/wxGUI*.1*
 %{_mandir}/man1/ximgview.1*
 
 %files devel
 %defattr(644,root,root,755)
+%doc dist.*/docs/html/*
 %attr(755,root,root) %{_libdir}/libgrass_*[!0-9].so
 %attr(755,root,root) %{_libdir}/libgrass_btree2.so
 %attr(755,root,root) %{_libdir}/libgrass_dig2.so
 %{_libdir}/libgrass_iostream.%{version}.a
-%{_includedir}/grass70
-
-%files doc
-%defattr(644,root,root,755)
-%doc dist.*/docs/html/*
+%{_includedir}/grass72
