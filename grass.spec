@@ -10,7 +10,7 @@ Summary:	The Geographic Resources Analysis Support System
 Summary(pl.UTF-8):	System obsługujący analizę zasobów geograficznych
 Name:		grass
 Version:	7.2.1
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL v2+
 Group:		X11/Applications
@@ -207,10 +207,13 @@ install -d $RPM_BUILD_ROOT{%{_datadir},%{_includedir}/grass72}
 # (maybe in section 7, but names are too common anyway); keep HTML version only
 %{__rm} $RPM_BUILD_ROOT%{_mandir}/man1/{cairodriver,database,databaseintro,display,displaydrivers,full_index,general,helptext,htmldriver,imagery,imageryintro,index,keywords,pngdriver,postscript,projectionintro,psdriver,raster,rasterintro,raster3d,raster3dintro,sql,temporal,temporalintro,topics,variables,vector,vectorascii,vectorintro}.1
 
+# non-standard icons
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/icons/hicolor/40x40
+
 %{__rm} -r $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/docs
 
-%{__mv} $RPM_BUILD_ROOT%{_datadir}/locale/{pt_br,pt_BR}
-%{__mv} $RPM_BUILD_ROOT%{_datadir}/locale/{zh,zh_CN}
+%{__mv} $RPM_BUILD_ROOT%{_localedir}/{pt_br,pt_BR}
+%{__mv} $RPM_BUILD_ROOT%{_localedir}/{zh,zh_CN}
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/AUTHORS
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/CHANGES
