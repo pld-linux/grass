@@ -10,7 +10,7 @@ Summary:	The Geographic Resources Analysis Support System
 Summary(pl.UTF-8):	System obsługujący analizę zasobów geograficznych
 Name:		grass
 Version:	7.4.0
-Release:	1
+Release:	2
 Epoch:		1
 License:	GPL v2+
 Group:		X11/Applications
@@ -212,6 +212,7 @@ install -d $RPM_BUILD_ROOT{%{_datadir},%{_includedir}/grass74}
 
 %{__rm} -r $RPM_BUILD_ROOT%{_libdir}/grass-%{gver}/docs
 
+%{__mv} $RPM_BUILD_ROOT%{_localedir}/{id_ID,id}
 %{__mv} $RPM_BUILD_ROOT%{_localedir}/{zh,zh_CN}
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/AUTHORS
