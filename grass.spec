@@ -350,5 +350,5 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libgrass_*[!0-9].so
 %attr(755,root,root) %{_libdir}/libgrass_btree2.so
 %attr(755,root,root) %{_libdir}/libgrass_dig2.so
-%{_libdir}/libgrass_iostream.%{version}.a
+%{_libdir}/libgrass_iostream.*.a
 %{_includedir}/grass%{gver}
