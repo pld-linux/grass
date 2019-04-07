@@ -15,7 +15,7 @@ Release:	1
 Epoch:		1
 License:	GPL v2+
 Group:		X11/Applications
-Source0:	http://grass.osgeo.org/grass%{gver}/source/%{name}-%{version}.tar.gz
+Source0:	http://grass.osgeo.org/grass76/source/%{name}-%{version}.tar.gz
 # Source0-md5:	9ca74f9010d013f735737a90c65d8a7f
 Patch0:		%{name}-soname.patch
 Patch3:		%{name}-ctypesgen.patch
