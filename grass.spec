@@ -155,8 +155,6 @@ Pliki nagłówkowe i biblioteki statyczne systemu GRASS.
 find general gui imagery lib/python/pygrass lib/init raster scripts temporal tools -name '*.py' | xargs grep -l '/usr/bin/env python' | xargs %{__sed} -i -e '1s,/usr/bin/env python,%{__python},'
 
 %build
-#export CFLAGS="%{rpmcflags} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
-#export CXXFLAGS="%{rpmcxxflags} -DACCEPT_USE_OF_DEPRECATED_PROJ_API_H"
 %configure2_13 \
 %if "%{_lib}" == "lib64"
         --enable-64bit \
