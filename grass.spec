@@ -11,7 +11,7 @@ Summary(pl.UTF-8):	System obsługujący analizę zasobów geograficznych
 Name:		grass
 Version:	7.6.1
 %define		gver	%(echo %{version} | awk -F. '{ print $1$2 }')
-Release:	3
+Release:	4
 Epoch:		1
 License:	GPL v2+
 Group:		X11/Applications
@@ -230,10 +230,10 @@ rm -rf $RPM_BUILD_ROOT
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS CHANGES CITING COPYING README TODO
-#%attr(755,root,root) %{_bindir}/grass%{gver}
+%attr(755,root,root) %{_bindir}/grass%{gver}
 %attr(755,root,root) %{_libdir}/libgrass_*.*.*.so
 %dir %{_libdir}/grass%{gver}
-%dir %{_libdir}/grass%{gver}/*.csv
+%{_libdir}/grass%{gver}/*.csv
 %attr(755,root,root) %{_libdir}/grass%{gver}/config.status
 %attr(755,root,root) %{_libdir}/grass%{gver}/bin
 %attr(755,root,root) %{_libdir}/grass%{gver}/driver

@@ -1,7 +1,8 @@
---- grass-6.4.5/lib/python/ctypes/ctypesgencore/parser/cgrammar.py.orig	2016-04-02 20:36:44.203067400 +0200
-+++ grass-6.4.5/lib/python/ctypes/ctypesgencore/parser/cgrammar.py	2016-04-02 09:42:23.508048350 +0200
-@@ -1080,7 +1080,7 @@
-         p[0] = p[1]
+diff -urNp -x '*.orig' grass-7.6.1.org/lib/python/ctypes/ctypesgencore/parser/cgrammar.py grass-7.6.1/lib/python/ctypes/ctypesgencore/parser/cgrammar.py
+--- grass-7.6.1.org/lib/python/ctypes/ctypesgencore/parser/cgrammar.py	2019-03-19 21:05:06.000000000 +0100
++++ grass-7.6.1/lib/python/ctypes/ctypesgencore/parser/cgrammar.py	2021-10-06 23:39:56.737556037 +0200
+@@ -1182,7 +1182,7 @@ def p_macro_parameter_list(p):
+ 
  
  def p_error(t):
 -    if t.lexer.in_define:
