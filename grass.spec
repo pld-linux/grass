@@ -9,16 +9,14 @@
 Summary:	The Geographic Resources Analysis Support System
 Summary(pl.UTF-8):	System obsługujący analizę zasobów geograficznych
 Name:		grass
-Version:	7.6.1
+Version:	8.4.0
 %define		gver	%(echo %{version} | awk -F. '{ print $1$2 }')
-Release:	5
+Release:	1
 Epoch:		1
 License:	GPL v2+
 Group:		X11/Applications
-Source0:	http://grass.osgeo.org/grass76/source/%{name}-%{version}.tar.gz
-# Source0-md5:	9ca74f9010d013f735737a90c65d8a7f
-Patch0:		%{name}-soname.patch
-Patch3:		%{name}-ctypesgen.patch
+Source0:	http://grass.osgeo.org/grass84/source/%{name}-%{version}.tar.gz
+# Source0-md5:	2dac2ae5e69655b9825c34cce433a793
 URL:		http://grass.osgeo.org/
 BuildRequires:	OpenGL-GLU-devel
 BuildRequires:	autoconf >= 2.13
@@ -47,13 +45,13 @@ BuildRequires:	postgresql-backend-devel
 BuildRequires:	postgresql-devel
 BuildRequires:	proj-devel >= 4.4.6
 BuildRequires:	proj-progs
-BuildRequires:	python-devel >= 1:2.3
-BuildRequires:	python-wxPython
+BuildRequires:	python3-devel
+BuildRequires:	python3-wxPython
 BuildRequires:	readline-devel
 BuildRequires:	sed >= 4.0
 BuildRequires:	sqlite3-devel >= 3.0
 %{?with_odbc:BuildRequires:	unixODBC-devel}
-BuildRequires:	wxGTK2-unicode-devel >= 2.8.1
+BuildRequires:	wxGTK3-unicode-devel >= 2.8.1
 BuildRequires:	xorg-lib-libX11-devel
 BuildRequires:	xorg-lib-libXext-devel
 BuildRequires:	xorg-lib-libXt-devel
@@ -144,15 +142,8 @@ Pliki nagłówkowe i biblioteki statyczne systemu GRASS.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch3 -p1
 
-%{__sed} -i -e '1s,/usr/bin/env perl,%{__perl},' \
-	display/d.text/test.pl
-	raster/r.topidx/gridatb.to.arc.pl \
-	raster/r.topidx/arc.to.gridatb.pl
-
-find general gui imagery lib/python/pygrass lib/init raster scripts temporal tools -name '*.py' | xargs grep -l '/usr/bin/env python' | xargs %{__sed} -i -e '1s,/usr/bin/env python,%{__python},'
+find general gui imagery lib/init raster scripts temporal utils -name '*.py' | xargs %{__sed} -E -i -e '1s,#!\s*/usr/bin/env\s+python3(\s|$),#!%{__python3}\1,'
 
 %build
 %configure2_13 \
@@ -179,6 +170,7 @@ find general gui imagery lib/python/pygrass lib/init raster scripts temporal too
 	--with-proj-share=/usr/share/proj \
 	--with-readline \
 	--with-sqlite \
+	--without-pdal \
 	--with-wxwidgets=/usr/bin/wx-gtk2-unicode-config
 
 %{__make}
@@ -210,12 +202,12 @@ install -d $RPM_BUILD_ROOT{%{_datadir},%{_includedir}/grass%{gver}}
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/zh_CN
 %{__mv} $RPM_BUILD_ROOT%{_localedir}/{zh,zh_CN}
 
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}%{gver}/{AUTHORS,CHANGES,CITING,COPYING,GPL.TXT,INSTALL,REQUIREMENTS.html}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/%{name}%{gver}/{AUTHORS,CHANGES,CITING,COPYING,GPL.TXT,INSTALL.md,REQUIREMENTS.md}
 
 %{__sed} -i -e "s|$RPM_BUILD_ROOT||g" \
 	$RPM_BUILD_ROOT%{_libdir}/grass%{gver}/etc/fontcap \
 	$RPM_BUILD_ROOT%{_libdir}/grass%{gver}/demolocation/.grassrc%{gver} \
-	$RPM_BUILD_ROOT%{_bindir}/grass%{gver} \
+	$RPM_BUILD_ROOT%{_bindir}/grass \
 	$RPM_BUILD_ROOT%{_includedir}/grass%{gver}/Make/Grass.make \
 	$RPM_BUILD_ROOT%{_includedir}/grass%{gver}/Make/Platform.make
 
@@ -229,12 +221,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f %{name}.lang
 %defattr(644,root,root,755)
-%doc AUTHORS CHANGES CITING COPYING README TODO
-%attr(755,root,root) %{_bindir}/grass%{gver}
+%doc AUTHORS CHANGES CITING COPYING README.md TODO
+%attr(755,root,root) %{_bindir}/grass
 %attr(755,root,root) %{_libdir}/libgrass_*.*.*.so
 %dir %{_libdir}/grass%{gver}
 %{_libdir}/grass%{gver}/*.csv
-%attr(755,root,root) %{_libdir}/grass%{gver}/config.status
 %attr(755,root,root) %{_libdir}/grass%{gver}/bin
 %attr(755,root,root) %{_libdir}/grass%{gver}/driver
 %dir %{_libdir}/grass%{gver}/etc
@@ -250,6 +241,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/grass%{gver}/etc/element_list
 %{_libdir}/grass%{gver}/etc/fontcap
 %attr(755,root,root) %{_libdir}/grass%{gver}/etc/i.find
+%{_libdir}/grass%{gver}/etc/i.band.library
 %{_libdir}/grass%{gver}/etc/license
 %attr(755,root,root) %{_libdir}/grass%{gver}/etc/lister
 %attr(755,root,root) %{_libdir}/grass%{gver}/etc/lock
@@ -272,48 +264,17 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/grass%{gver}/gui/images
 %dir %{_libdir}/grass%{gver}/gui/scripts
 %attr(755,root,root) %{_libdir}/grass%{gver}/gui/scripts/d.*
-%dir %{_libdir}/grass%{gver}/gui/wxpython
-%{_libdir}/grass%{gver}/gui/wxpython/README
-%{_libdir}/grass%{gver}/gui/wxpython/animation
-%{_libdir}/grass%{gver}/gui/wxpython/core
-%{_libdir}/grass%{gver}/gui/wxpython/datacatalog
-%{_libdir}/grass%{gver}/gui/wxpython/dbmgr
-%{_libdir}/grass%{gver}/gui/wxpython/gcp
-%{_libdir}/grass%{gver}/gui/wxpython/gmodeler
-%{_libdir}/grass%{gver}/gui/wxpython/gui_core
-%{_libdir}/grass%{gver}/gui/wxpython/iclass
-%{_libdir}/grass%{gver}/gui/wxpython/icons
-%{_libdir}/grass%{gver}/gui/wxpython/image2target
-%{_libdir}/grass%{gver}/gui/wxpython/iscatt
-%{_libdir}/grass%{gver}/gui/wxpython/lmgr
-%{_libdir}/grass%{gver}/gui/wxpython/location_wizard
-%{_libdir}/grass%{gver}/gui/wxpython/mapdisp
-%{_libdir}/grass%{gver}/gui/wxpython/mapswipe
-%{_libdir}/grass%{gver}/gui/wxpython/mapwin
-%{_libdir}/grass%{gver}/gui/wxpython/modules
-%{_libdir}/grass%{gver}/gui/wxpython/nviz
-%{_libdir}/grass%{gver}/gui/wxpython/photo2image
-%{_libdir}/grass%{gver}/gui/wxpython/psmap
-%{_libdir}/grass%{gver}/gui/wxpython/rdigit
-%{_libdir}/grass%{gver}/gui/wxpython/rlisetup
-%{_libdir}/grass%{gver}/gui/wxpython/startup
-%{_libdir}/grass%{gver}/gui/wxpython/timeline
-%{_libdir}/grass%{gver}/gui/wxpython/tplot
-%{_libdir}/grass%{gver}/gui/wxpython/vdigit
-%{_libdir}/grass%{gver}/gui/wxpython/vnet
-%{_libdir}/grass%{gver}/gui/wxpython/web_services
-%{_libdir}/grass%{gver}/gui/wxpython/wxplot
-%{_libdir}/grass%{gver}/gui/wxpython/xml
-%{_libdir}/grass%{gver}/gui/wxpython/gis_set*.py*
-%{_libdir}/grass%{gver}/gui/wxpython/wxgui.py*
+%{_libdir}/grass%{gver}/gui/wxpython
 %{_libdir}/grass%{gver}/gui/xml
 %attr(755,root,root) %{_libdir}/grass%{gver}/scripts
-%dir %{_libdir}/grass%{gver}/tools
-%attr(755,root,root) %{_libdir}/grass%{gver}/tools/g.echo
-%attr(755,root,root) %{_libdir}/grass%{gver}/tools/g.html2man.py
-%{_libdir}/grass%{gver}/tools/ggroff.py*
-%{_libdir}/grass%{gver}/tools/ghtml.py*
-%attr(755,root,root) %{_libdir}/grass%{gver}/tools/mkhtml.py
+%{_libdir}/grass%{gver}/utils/__pycache__
+%dir %{_libdir}/grass%{gver}/utils
+%attr(755,root,root) %{_libdir}/grass%{gver}/utils/g.echo
+%attr(755,root,root) %{_libdir}/grass%{gver}/utils/g.html2man.py
+%attr(755,root,root) %{_libdir}/grass%{gver}/utils/generate_last_commit_file.py
+%{_libdir}/grass%{gver}/utils/ggroff.py*
+%{_libdir}/grass%{gver}/utils/ghtml.py*
+%attr(755,root,root) %{_libdir}/grass%{gver}/utils/mkhtml.py
 %{_libdir}/grass%{gver}/translation_status.json
 # default (demo?) database - subpackage?
 %{_libdir}/grass%{gver}/demolocation
@@ -350,5 +311,4 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_libdir}/libgrass_*[!0-9].so
 %attr(755,root,root) %{_libdir}/libgrass_btree2.so
 %attr(755,root,root) %{_libdir}/libgrass_dig2.so
-%{_libdir}/libgrass_iostream.*.a
 %{_includedir}/grass%{gver}
